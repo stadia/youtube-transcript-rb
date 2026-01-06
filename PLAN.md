@@ -242,37 +242,46 @@ end
 
 ---
 
-## Phase 6: Testing
+## Phase 6: Testing ✅ COMPLETED
 
-### Task 6.1: Unit Tests for Each Component
+### Task 6.1: Unit Tests for Each Component ✅
 
-**Priority:** High  
-**Estimated Effort:** 4 hours
+**Status:** Completed (All phases)
 
-Test files to create/update:
-- `spec/errors_spec.rb`
-- `spec/transcript_spec.rb`
-- `spec/transcript_list_spec.rb`
-- `spec/transcript_list_fetcher_spec.rb`
-- `spec/youtube_transcript_api_spec.rb` (already exists, expand)
-- `spec/formatters_spec.rb` (already exists, expand)
+Test files:
+- `spec/errors_spec.rb` - 15+ error classes tested
+- `spec/settings_spec.rb` - Constants and settings
+- `spec/transcript_spec.rb` - Transcript data classes
+- `spec/transcript_parser_spec.rb` - XML parsing
+- `spec/transcript_list_spec.rb` - TranscriptList operations
+- `spec/transcript_list_fetcher_spec.rb` - HTTP fetching with WebMock
+- `spec/api_spec.rb` - YouTubeTranscriptApi main entry point
+- `spec/formatters_spec.rb` - All formatter classes
 
-Use WebMock for HTTP stubbing (already configured).
+### Task 6.2: Integration Tests ✅
 
-### Task 6.2: Integration Tests
+**Status:** Completed  
+**File:** `spec/integration_spec.rb`
 
-**Priority:** Medium  
-**Estimated Effort:** 2 hours
-
-Create integration tests with real YouTube video IDs (skipped by default):
+Integration tests with real YouTube video IDs (skipped by default):
 ```ruby
-RSpec.describe "Integration", :integration do
-  it "fetches real transcript" do
-    skip "Integration test - run manually"
-    # ...
-  end
-end
+# Run integration tests:
+INTEGRATION=1 bundle exec rspec spec/integration_spec.rb
 ```
+
+Test coverage:
+- `YouTubeTranscriptApi#list` - Fetches real transcript list
+- `YouTubeTranscriptApi#fetch` - Fetches real transcripts with language options
+- `YouTubeTranscriptApi#fetch_all` - Batch fetching
+- Convenience methods (`Youtube::Transcript::Rb.fetch`, `.list`)
+- Transcript translation
+- All formatters with real data (JSON, Text, SRT, WebVTT, PrettyPrint)
+- Error handling (NoTranscriptFound, invalid video ID)
+- FetchedTranscript interface (Enumerable, indexable, metadata)
+- TranscriptList interface (Enumerable, find methods)
+- Transcript object properties and methods
+
+**Integration Test Results:** 31 examples, 0 failures, 2 pending (expected)
 
 ---
 
@@ -286,13 +295,13 @@ end
 | Phase 2: Transcript Fetching | ✅ Completed | `transcript_list.rb`, `transcript_list_fetcher.rb` | 70 examples |
 | Phase 3: Main API | ✅ Completed | `api.rb` | 33 examples |
 | Phase 4: Formatters | ✅ Completed | `formatters.rb` | 53 examples |
+| Phase 6: Integration Tests | ✅ Completed | `integration_spec.rb` | 31 examples |
 
 ### Remaining Phases
 
 | Phase | Status | Files | Estimated Effort |
 |-------|--------|-------|------------------|
 | Phase 5: Proxy Support | ❌ Optional | `proxies.rb` | 1.5 hours |
-| Phase 6: Integration Tests | ❌ Pending | Integration spec files | 2 hours |
 
 ### Git Commits
 
@@ -302,11 +311,18 @@ end
 | `ccae0eb` | Phase 2 - TranscriptList and TranscriptListFetcher |
 | `290c9d2` | Phase 3 - YouTubeTranscriptApi main entry point |
 | `ec9c985` | Phase 4 - Formatters for transcript output |
+| Phase 6 | Integration tests with real YouTube videos |
 
 ### Current Test Summary
 
+**Unit Tests:**
 ```
 305 examples, 0 failures
+```
+
+**Integration Tests (run with INTEGRATION=1):**
+```
+31 examples, 0 failures, 2 pending
 ```
 
 Test files:
@@ -318,6 +334,7 @@ Test files:
 - `spec/transcript_list_fetcher_spec.rb`
 - `spec/api_spec.rb`
 - `spec/formatters_spec.rb`
+- `spec/integration_spec.rb` (requires INTEGRATION=1)
 
 ---
 
@@ -401,4 +418,5 @@ transcript = Youtube::Transcript::Rb.fetch("video_id", languages: ["en"])
 - [x] Translation feature works (Transcript.translate)
 - [x] All formatters produce correct output (JSON, Text, SRT, WebVTT, PrettyPrint)
 - [x] Error handling matches expected behavior (15+ error classes)
-- [ ] README examples work as documented (needs README update)
+- [x] README examples work as documented (README updated)
+- [x] Integration tests pass with real YouTube videos (**31 examples, 0 failures**)
