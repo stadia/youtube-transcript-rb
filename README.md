@@ -200,7 +200,7 @@ bundle exec rspec
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/jeff.dean/youtube-transcript-rb.
+Bug reports and pull requests are welcome on GitHub at https://github.com/stadia/youtube-transcript-rb.
 
 ## License
 
