@@ -11,11 +11,12 @@ Gem::Specification.new do |spec|
   spec.summary = "Fetch YouTube video transcripts and subtitles"
   spec.description = "A Ruby library to retrieve transcripts/subtitles for YouTube videos. Port of the Python youtube-transcript-api."
   spec.homepage = "https://github.com/stadia/youtube-transcript-rb"
+  spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/stadia/youtube-transcript-rb"
-  spec.metadata["changelog_uri"] = "https://github.com/stadia/youtube-transcript-rb/blob/master/CHANGELOG.md"
+  spec.metadata["changelog_uri"] = "https://github.com/stadia/youtube-transcript-rb/blob/main/CHANGELOG.md"
+  spec.metadata["bug_tracker_uri"] = "https://github.com/stadia/youtube-transcript-rb/issues"
+  spec.metadata["documentation_uri"] = "https://github.com/stadia/youtube-transcript-rb#readme"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
