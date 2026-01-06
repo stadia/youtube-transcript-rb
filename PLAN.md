@@ -152,45 +152,42 @@ Factory and container for transcripts:
 
 ---
 
-## Phase 3: Main API ⏳ NEXT
+## Phase 3: Main API ✅ COMPLETED
 
-### Task 3.1: Create YouTubeTranscriptApi (`api.rb`)
+### Task 3.1: Create YouTubeTranscriptApi (`api.rb`) ✅
 
-**Priority:** High  
-**Estimated Effort:** 1 hour
+**Status:** Completed  
+**Commit:** `290c9d2 Phase 3: Implement YouTubeTranscriptApi main entry point`
 
-Main entry point class:
-```ruby
-class YouTubeTranscriptApi
-  def initialize(http_client: nil, proxy_config: nil)
-    # Setup Faraday connection
-  end
-  
-  def fetch(video_id, languages: ["en"], preserve_formatting: false)
-    list(video_id)
-      .find_transcript(languages)
-      .fetch(preserve_formatting: preserve_formatting)
-  end
-  
-  def list(video_id)
-    @fetcher.fetch(video_id)
-  end
-end
-```
+Main entry point class implemented:
+- `YouTubeTranscriptApi.new(http_client:, proxy_config:)` - Constructor with optional config
+- `fetch(video_id, languages:, preserve_formatting:)` - Fetch single transcript
+- `list(video_id)` - List all available transcripts for a video
+- `fetch_all(video_ids, ...)` - Batch fetch with error handling and yield support
 
-### Task 3.2: Update Main Module (`rb.rb`)
+Features:
+- Default Faraday HTTP client with 30s timeout
+- Configurable HTTP client for custom setups
+- Proxy configuration support
+- `continue_on_error` option for batch processing
+- Block yielding for progress tracking
 
-**Priority:** High  
-**Estimated Effort:** 30 minutes
+### Task 3.2: Update Main Module (`rb.rb`) ✅
 
-Update existing `lib/youtube/transcript/rb.rb`:
-- Add all require statements
-- Verify convenience methods work correctly
-- Export all public classes
+**Status:** Completed
+
+Convenience methods already existed and now work:
+- `Youtube::Transcript::Rb.fetch(video_id, languages:, preserve_formatting:)`
+- `Youtube::Transcript::Rb.list(video_id)`
+
+### Phase 3 Test Results
+- **33 new examples** for YouTubeTranscriptApi
+- **252 total examples, 0 failures**
+- Test file: `spec/api_spec.rb`
 
 ---
 
-## Phase 4: Formatters
+## Phase 4: Formatters ⏳ NEXT
 
 ### Task 4.1: Create Formatter Classes (`formatters.rb`)
 
@@ -284,13 +281,13 @@ end
 |-------|--------|-------|-------|
 | Phase 1: Core Infrastructure | ✅ Completed | `errors.rb`, `settings.rb`, `transcript.rb`, `transcript_parser.rb` | 149 examples |
 | Phase 2: Transcript Fetching | ✅ Completed | `transcript_list.rb`, `transcript_list_fetcher.rb` | 70 examples |
+| Phase 3: Main API | ✅ Completed | `api.rb` | 33 examples |
 
 ### Remaining Phases
 
 | Phase | Status | Files | Estimated Effort |
 |-------|--------|-------|------------------|
-| Phase 3: Main API | ⏳ Next | `api.rb`, update `rb.rb` | 1.5 hours |
-| Phase 4: Formatters | ❌ Pending | `formatters.rb` | 2 hours |
+| Phase 4: Formatters | ⏳ Next | `formatters.rb` | 2 hours |
 | Phase 5: Proxy Support | ❌ Optional | `proxies.rb` | 1.5 hours |
 | Phase 6: Integration Tests | ❌ Pending | Integration spec files | 2 hours |
 
@@ -300,11 +297,12 @@ end
 |--------|-------------|
 | Phase 1 | Core infrastructure - errors, settings, transcript classes, parser |
 | `ccae0eb` | Phase 2 - TranscriptList and TranscriptListFetcher |
+| `290c9d2` | Phase 3 - YouTubeTranscriptApi main entry point |
 
 ### Current Test Summary
 
 ```
-219 examples, 0 failures
+252 examples, 0 failures
 ```
 
 Test files:
@@ -314,6 +312,7 @@ Test files:
 - `spec/transcript_parser_spec.rb`
 - `spec/transcript_list_spec.rb`
 - `spec/transcript_list_fetcher_spec.rb`
+- `spec/api_spec.rb`
 
 ---
 
@@ -391,10 +390,10 @@ transcript = Youtube::Transcript::Rb.fetch("video_id", languages: ["en"])
 
 ## Success Criteria
 
-- [x] All tests pass (`bundle exec rspec`) - **219 examples, 0 failures**
-- [ ] Can fetch transcripts for public videos (requires Phase 3)
+- [x] All tests pass (`bundle exec rspec`) - **252 examples, 0 failures**
+- [x] Can fetch transcripts for public videos (YouTubeTranscriptApi implemented)
 - [x] Language selection works correctly (TranscriptList.find_transcript)
 - [x] Translation feature works (Transcript.translate)
 - [ ] All formatters produce correct output (Phase 4)
 - [x] Error handling matches expected behavior (15+ error classes)
-- [ ] README examples work as documented (requires Phase 3)
+- [ ] README examples work as documented (needs README update)
