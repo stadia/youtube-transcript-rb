@@ -15,7 +15,9 @@
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require "bundler/setup"
+require "youtube/transcript/rb"
 require "webmock/rspec"
+require "faraday"
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
