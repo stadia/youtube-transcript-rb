@@ -39,7 +39,7 @@ lib/youtube/transcript/rb/
 ├── transcript_list.rb   # ✅ Completed (Phase 2)
 ├── transcript_list_fetcher.rb  # ✅ Completed (Phase 2)
 ├── api.rb               # ✅ Completed (Phase 3)
-├── formatters.rb        # ❌ To be created (Phase 4)
+├── formatters.rb        # ✅ Completed (Phase 4)
 └── proxies.rb           # ❌ To be created (optional, Phase 5)
 ```
 
@@ -187,36 +187,39 @@ Convenience methods already existed and now work:
 
 ---
 
-## Phase 4: Formatters ⏳ NEXT
+## Phase 4: Formatters ✅ COMPLETED
 
-### Task 4.1: Create Formatter Classes (`formatters.rb`)
+### Task 4.1: Create Formatter Classes (`formatters.rb`) ✅
 
-**Priority:** Medium  
-**Estimated Effort:** 2 hours
+**Status:** Completed  
+**Commit:** `ec9c985 Phase 4: Implement Formatters for transcript output`
 
-Formatter hierarchy:
-```ruby
-module Formatters
-  class Formatter  # Base class
-    def format(transcript); raise NotImplementedError; end
-    def format_transcripts(transcripts); raise NotImplementedError; end
-  end
-  
-  class TextFormatter < Formatter; end
-  class JSONFormatter < Formatter; end
-  class PrettyPrintFormatter < Formatter; end
-  class WebVTTFormatter < Formatter; end
-  class SRTFormatter < Formatter; end
-end
-```
+Formatter hierarchy implemented:
+- `Formatter` - Abstract base class
+- `JSONFormatter` - JSON output with configurable options
+- `TextFormatter` - Plain text (text only, no timestamps)
+- `PrettyPrintFormatter` - Ruby pretty-printed output
+- `TextBasedFormatter` - Base for timestamp-based formatters
+- `SRTFormatter` - SubRip format (`HH:MM:SS,mmm`)
+- `WebVTTFormatter` - Web Video Text Tracks (`HH:MM:SS.mmm`)
+- `FormatterLoader` - Utility to load formatters by name
 
-Timestamp formatting:
-- WebVTT: `HH:MM:SS.mmm`
-- SRT: `HH:MM:SS,mmm` (comma instead of period)
+Features:
+- `format_transcript(transcript)` - Format single transcript
+- `format_transcripts(transcripts)` - Format multiple transcripts
+- Proper timestamp handling with hours/mins/secs/ms
+- Overlapping timestamp correction
+- SRT includes sequence numbers
+- WebVTT includes WEBVTT header
+
+### Phase 4 Test Results
+- **53 new examples** for Formatters
+- **305 total examples, 0 failures**
+- Test file: `spec/formatters_spec.rb`
 
 ---
 
-## Phase 5: Proxy Support (Optional)
+## Phase 5: Proxy Support (Optional) ⏳ (Optional)
 
 ### Task 5.1: Create Proxy Configuration (`proxies.rb`)
 
@@ -282,12 +285,12 @@ end
 | Phase 1: Core Infrastructure | ✅ Completed | `errors.rb`, `settings.rb`, `transcript.rb`, `transcript_parser.rb` | 149 examples |
 | Phase 2: Transcript Fetching | ✅ Completed | `transcript_list.rb`, `transcript_list_fetcher.rb` | 70 examples |
 | Phase 3: Main API | ✅ Completed | `api.rb` | 33 examples |
+| Phase 4: Formatters | ✅ Completed | `formatters.rb` | 53 examples |
 
 ### Remaining Phases
 
 | Phase | Status | Files | Estimated Effort |
 |-------|--------|-------|------------------|
-| Phase 4: Formatters | ⏳ Next | `formatters.rb` | 2 hours |
 | Phase 5: Proxy Support | ❌ Optional | `proxies.rb` | 1.5 hours |
 | Phase 6: Integration Tests | ❌ Pending | Integration spec files | 2 hours |
 
@@ -298,11 +301,12 @@ end
 | Phase 1 | Core infrastructure - errors, settings, transcript classes, parser |
 | `ccae0eb` | Phase 2 - TranscriptList and TranscriptListFetcher |
 | `290c9d2` | Phase 3 - YouTubeTranscriptApi main entry point |
+| `ec9c985` | Phase 4 - Formatters for transcript output |
 
 ### Current Test Summary
 
 ```
-252 examples, 0 failures
+305 examples, 0 failures
 ```
 
 Test files:
@@ -313,6 +317,7 @@ Test files:
 - `spec/transcript_list_spec.rb`
 - `spec/transcript_list_fetcher_spec.rb`
 - `spec/api_spec.rb`
+- `spec/formatters_spec.rb`
 
 ---
 
@@ -390,10 +395,10 @@ transcript = Youtube::Transcript::Rb.fetch("video_id", languages: ["en"])
 
 ## Success Criteria
 
-- [x] All tests pass (`bundle exec rspec`) - **252 examples, 0 failures**
+- [x] All tests pass (`bundle exec rspec`) - **305 examples, 0 failures**
 - [x] Can fetch transcripts for public videos (YouTubeTranscriptApi implemented)
 - [x] Language selection works correctly (TranscriptList.find_transcript)
 - [x] Translation feature works (Transcript.translate)
-- [ ] All formatters produce correct output (Phase 4)
+- [x] All formatters produce correct output (JSON, Text, SRT, WebVTT, PrettyPrint)
 - [x] Error handling matches expected behavior (15+ error classes)
 - [ ] README examples work as documented (needs README update)
