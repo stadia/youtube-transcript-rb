@@ -38,7 +38,7 @@ lib/youtube/transcript/rb/
 ├── transcript_parser.rb # ✅ Completed (Phase 1)
 ├── transcript_list.rb   # ✅ Completed (Phase 2)
 ├── transcript_list_fetcher.rb  # ✅ Completed (Phase 2)
-├── api.rb               # ❌ To be created (Phase 3)
+├── api.rb               # ✅ Completed (Phase 3)
 ├── formatters.rb        # ❌ To be created (Phase 4)
 └── proxies.rb           # ❌ To be created (optional, Phase 5)
 ```
