@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    youtube-transcript-rb (0.1.0)
+    youtube-transcript-rb (0.2.0)
       faraday (~> 2.0)
       faraday-follow_redirects (~> 0.3)
       nokogiri (~> 1.15)
@@ -120,7 +120,7 @@ CHECKSUMS
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
   webmock (3.26.1) sha256=4f696fb57c90a827c20aadb2d4f9058bbff10f7f043bd0d4c3f58791143b1cd7
-  youtube-transcript-rb (0.1.0)
+  youtube-transcript-rb (0.2.0)
 
 BUNDLED WITH
   4.0.3
