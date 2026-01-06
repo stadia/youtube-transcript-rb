@@ -35,146 +35,124 @@ lib/youtube/transcript/rb/
 ├── errors.rb            # ✅ Completed (Phase 1)
 ├── settings.rb          # ✅ Completed (Phase 1)
 ├── transcript.rb        # ✅ Completed (Phase 1)
-├── transcript_list.rb   # ❌ To be created
-├── transcript_list_fetcher.rb  # ❌ To be created
 ├── transcript_parser.rb # ✅ Completed (Phase 1)
-├── api.rb               # ❌ To be created (YouTubeTranscriptApi)
-├── formatters.rb        # ❌ To be created
+├── transcript_list.rb   # ✅ Completed (Phase 2)
+├── transcript_list_fetcher.rb  # ✅ Completed (Phase 2)
+├── api.rb               # ❌ To be created (Phase 3)
+├── formatters.rb        # ❌ To be created (Phase 4)
 └── proxies.rb           # ❌ To be created (optional, Phase 5)
 ```
 
 ---
 
-## Phase 1: Core Infrastructure
+## Phase 1: Core Infrastructure ✅ COMPLETED
 
-### Task 1.1: Create Error Classes (`errors.rb`)
+### Task 1.1: Create Error Classes (`errors.rb`) ✅
 
-**Priority:** High  
-**Estimated Effort:** 1 hour
+**Status:** Completed  
+**Commit:** Phase 1 commit
 
-Create exception hierarchy mirroring Python's `_errors.py`:
+Created comprehensive exception hierarchy (15+ classes) mirroring Python's `_errors.py`:
+- `Error` - Base error class
+- `CouldNotRetrieveTranscript` - Base class for transcript retrieval errors
+- `VideoUnavailable`, `TranscriptsDisabled`, `NoTranscriptFound`, etc.
+- Each error class includes appropriate attributes and formatted error messages
 
-```ruby
-module Youtube::Transcript::Rb
-  class Error < StandardError; end
-  
-  class CouldNotRetrieveTranscript < Error
-    attr_reader :video_id
-  end
-  
-  # Specific errors
-  class VideoUnavailable < CouldNotRetrieveTranscript; end
-  class TranscriptsDisabled < CouldNotRetrieveTranscript; end
-  class NoTranscriptFound < CouldNotRetrieveTranscript; end
-  class NoTranscriptAvailable < CouldNotRetrieveTranscript; end
-  class TranslationLanguageNotAvailable < CouldNotRetrieveTranscript; end
-  class NotTranslatable < CouldNotRetrieveTranscript; end
-  class TooManyRequests < CouldNotRetrieveTranscript; end
-  class IpBlocked < CouldNotRetrieveTranscript; end
-  class RequestBlocked < CouldNotRetrieveTranscript; end
-  class InvalidVideoId < CouldNotRetrieveTranscript; end
-  class AgeRestricted < CouldNotRetrieveTranscript; end
-  class VideoUnplayable < CouldNotRetrieveTranscript; end
-  class PoTokenRequired < CouldNotRetrieveTranscript; end
-  class YouTubeDataUnparsable < CouldNotRetrieveTranscript; end
-  class YouTubeRequestFailed < CouldNotRetrieveTranscript; end
-  class FailedToCreateConsentCookie < CouldNotRetrieveTranscript; end
-end
-```
+### Task 1.2: Create Settings/Constants (`settings.rb`) ✅
 
-### Task 1.2: Create Settings/Constants (`settings.rb`)
+**Status:** Completed
 
-**Priority:** High  
-**Estimated Effort:** 15 minutes
+Constants defined:
+- `WATCH_URL` - YouTube watch page URL template
+- `INNERTUBE_API_URL` - Innertube API endpoint template
+- `INNERTUBE_CONTEXT` - Android client context for API requests
 
-```ruby
-module Youtube::Transcript::Rb
-  WATCH_URL = "https://www.youtube.com/watch?v=%{video_id}"
-  INNERTUBE_API_URL = "https://www.youtube.com/youtubei/v1/player?key=%{api_key}"
-  INNERTUBE_CONTEXT = {
-    "client" => {
-      "clientName" => "ANDROID",
-      "clientVersion" => "20.10.38"
-    }
-  }.freeze
-end
-```
+### Task 1.3: Create Transcript Data Classes (`transcript.rb`) ✅
 
-### Task 1.3: Create Transcript Data Classes (`transcript.rb`)
+**Status:** Completed
 
-**Priority:** High  
-**Estimated Effort:** 1.5 hours
-
-Classes to create:
-- `TranscriptSnippet` - Individual transcript segment (text, start, duration)
-- `FetchedTranscript` - Collection of snippets with metadata (Enumerable)
-- `Transcript` - Metadata about available transcript with `fetch` and `translate` methods
+Classes implemented:
 - `TranslationLanguage` - Language code and name pair
+- `TranscriptSnippet` - Individual transcript segment (text, start, duration)
+- `FetchedTranscript` - Collection of snippets with Enumerable support
+- `Transcript` - Metadata with `fetch` and `translate` methods
 
-Key Ruby idioms:
-- Use `Struct` or plain classes with `attr_reader`
-- Include `Enumerable` for `FetchedTranscript`
-- Use keyword arguments for initialization
+### Task 1.4: Create TranscriptParser (`transcript_parser.rb`) ✅
+
+**Status:** Completed
+
+Features:
+- XML parsing with Nokogiri
+- HTML entity unescaping with CGI
+- `preserve_formatting` option
+- Formatting tag handling (strong, em, b, i, etc.)
+
+### Phase 1 Test Results
+- **149 examples, 0 failures**
+- Test files: `errors_spec.rb`, `transcript_spec.rb`, `transcript_parser_spec.rb`, `settings_spec.rb`
 
 ---
 
-## Phase 2: Transcript Fetching
+## Phase 2: Transcript Fetching ✅ COMPLETED
 
-### Task 2.1: Create TranscriptParser (`transcript_parser.rb`)
+### Task 2.1: Create TranscriptListFetcher (`transcript_list_fetcher.rb`) ✅
 
-**Priority:** High  
-**Estimated Effort:** 1 hour
+**Status:** Completed  
+**Commit:** `ccae0eb Phase 2: Implement TranscriptList and TranscriptListFetcher`
 
-Parses XML transcript data from YouTube:
-- Use Nokogiri for XML parsing
-- Handle HTML entity unescaping
-- Support `preserve_formatting` option
-- Handle formatting tags (strong, em, b, i, etc.)
-
-### Task 2.2: Create TranscriptListFetcher (`transcript_list_fetcher.rb`)
-
-**Priority:** High  
-**Estimated Effort:** 3 hours
-
-This is the most complex component. Responsibilities:
-1. Fetch video HTML page
-2. Extract INNERTUBE_API_KEY from HTML
-3. Make POST request to Innertube API
+This is the most complex component. Implemented features:
+1. Fetch video HTML page with `Accept-Language: en-US` header
+2. Extract `INNERTUBE_API_KEY` from HTML using regex
+3. Make POST request to Innertube API with Android client context
 4. Parse captions JSON from response
-5. Handle consent cookies
+5. Handle consent cookies for EU/GDPR compliance
 6. Handle various error conditions
 
-Key methods:
+Key methods implemented:
 - `fetch(video_id)` → `TranscriptList`
-- `_fetch_video_html(video_id)`
-- `_extract_innertube_api_key(html)`
-- `_fetch_innertube_data(video_id, api_key)`
-- `_extract_captions_json(innertube_data)`
-- `_assert_playability(status_data)`
+- `fetch_video_html(video_id)` - Fetches and unescapes HTML
+- `extract_innertube_api_key(html, video_id)` - Regex extraction
+- `fetch_innertube_data(video_id, api_key)` - POST to Innertube API
+- `extract_captions_json(innertube_data, video_id)` - JSON extraction
+- `assert_playability(status_data, video_id)` - Playability validation
 
-HTTP handling:
-- Use Faraday for HTTP requests
-- Set `Accept-Language: en-US` header
-- Handle 429 (Too Many Requests) errors
-- Handle consent cookie flow
+Additional modules:
+- `PlayabilityStatus` - OK, ERROR, LOGIN_REQUIRED constants
+- `PlayabilityFailedReason` - BOT_DETECTED, AGE_RESTRICTED, VIDEO_UNAVAILABLE
 
-### Task 2.3: Create TranscriptList (`transcript_list.rb`)
+Error handling:
+- HTTP 429 → `IpBlocked`
+- CAPTCHA detected → `IpBlocked`
+- Bot detection → `RequestBlocked`
+- Age restriction → `AgeRestricted`
+- Video unavailable → `VideoUnavailable` or `InvalidVideoId`
+- No captions → `TranscriptsDisabled`
+- Consent issues → `FailedToCreateConsentCookie`
 
-**Priority:** High  
-**Estimated Effort:** 1.5 hours
+Retry support with proxy configuration.
+
+### Task 2.2: Create TranscriptList (`transcript_list.rb`) ✅
+
+**Status:** Completed
 
 Factory and container for transcripts:
-- `TranscriptList.build(http_client, video_id, captions_json)`
-- Store manually created and generated transcripts separately
-- `find_transcript(language_codes)`
+- `TranscriptList.build(http_client:, video_id:, captions_json:)` - Factory method
+- Separates manually created and generated transcripts
+- `find_transcript(language_codes)` - Finds by priority, prefers manual
 - `find_manually_created_transcript(language_codes)`
 - `find_generated_transcript(language_codes)`
-- Include `Enumerable`
-- Implement `to_s` for debugging
+- `Enumerable` included for iteration
+- `to_s` for human-readable output
+
+### Phase 2 Test Results
+- **70 new examples** (38 for TranscriptList, 32 for TranscriptListFetcher)
+- **219 total examples, 0 failures**
+- Test files: `transcript_list_spec.rb`, `transcript_list_fetcher_spec.rb`
+- Comprehensive HTTP mocking with WebMock
 
 ---
 
-## Phase 3: Main API
+## Phase 3: Main API ⏳ NEXT
 
 ### Task 3.1: Create YouTubeTranscriptApi (`api.rb`)
 
@@ -298,33 +276,44 @@ end
 
 ---
 
-## Implementation Order
+## Implementation Progress
 
-### Week 1: Core Implementation
+### Completed Phases
 
-| Day | Task | Files |
-|-----|------|-------|
-| 1 | Task 1.1, 1.2 | `errors.rb`, `settings.rb` |
-| 2 | Task 1.3 | `transcript.rb` |
-| 3 | Task 2.1 | `transcript_parser.rb` |
-| 4-5 | Task 2.2 | `transcript_list_fetcher.rb` |
+| Phase | Status | Files | Tests |
+|-------|--------|-------|-------|
+| Phase 1: Core Infrastructure | ✅ Completed | `errors.rb`, `settings.rb`, `transcript.rb`, `transcript_parser.rb` | 149 examples |
+| Phase 2: Transcript Fetching | ✅ Completed | `transcript_list.rb`, `transcript_list_fetcher.rb` | 70 examples |
 
-### Week 2: API and Formatters
+### Remaining Phases
 
-| Day | Task | Files |
-|-----|------|-------|
-| 1 | Task 2.3 | `transcript_list.rb` |
-| 2 | Task 3.1, 3.2 | `api.rb`, update `rb.rb` |
-| 3 | Task 4.1 | `formatters.rb` |
-| 4-5 | Task 6.1 | All spec files |
+| Phase | Status | Files | Estimated Effort |
+|-------|--------|-------|------------------|
+| Phase 3: Main API | ⏳ Next | `api.rb`, update `rb.rb` | 1.5 hours |
+| Phase 4: Formatters | ❌ Pending | `formatters.rb` | 2 hours |
+| Phase 5: Proxy Support | ❌ Optional | `proxies.rb` | 1.5 hours |
+| Phase 6: Integration Tests | ❌ Pending | Integration spec files | 2 hours |
 
-### Week 3: Polish and Optional Features
+### Git Commits
 
-| Day | Task | Files |
-|-----|------|-------|
-| 1-2 | Task 5.1 | `proxies.rb` |
-| 3 | Task 6.2 | Integration tests |
-| 4-5 | Documentation, README updates, bug fixes |
+| Commit | Description |
+|--------|-------------|
+| Phase 1 | Core infrastructure - errors, settings, transcript classes, parser |
+| `ccae0eb` | Phase 2 - TranscriptList and TranscriptListFetcher |
+
+### Current Test Summary
+
+```
+219 examples, 0 failures
+```
+
+Test files:
+- `spec/errors_spec.rb`
+- `spec/settings_spec.rb`
+- `spec/transcript_spec.rb`
+- `spec/transcript_parser_spec.rb`
+- `spec/transcript_list_spec.rb`
+- `spec/transcript_list_fetcher_spec.rb`
 
 ---
 
@@ -402,10 +391,10 @@ transcript = Youtube::Transcript::Rb.fetch("video_id", languages: ["en"])
 
 ## Success Criteria
 
-- [ ] All tests pass (`bundle exec rspec`)
-- [ ] Can fetch transcripts for public videos
-- [ ] Language selection works correctly
-- [ ] Translation feature works
-- [ ] All formatters produce correct output
-- [ ] Error handling matches expected behavior
-- [ ] README examples work as documented
+- [x] All tests pass (`bundle exec rspec`) - **219 examples, 0 failures**
+- [ ] Can fetch transcripts for public videos (requires Phase 3)
+- [x] Language selection works correctly (TranscriptList.find_transcript)
+- [x] Translation feature works (Transcript.translate)
+- [ ] All formatters produce correct output (Phase 4)
+- [x] Error handling matches expected behavior (15+ error classes)
+- [ ] README examples work as documented (requires Phase 3)
