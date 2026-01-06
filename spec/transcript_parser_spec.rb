@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "youtube/transcript/rb"
+require "youtube_rb/transcript"
 
-RSpec.describe Youtube::Transcript::Rb::TranscriptParser do
+RSpec.describe YoutubeRb::Transcript::TranscriptParser do
   describe "#initialize" do
     it "creates a parser with preserve_formatting false by default" do
       parser = described_class.new
@@ -34,7 +34,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptParser do
         result = parser.parse(xml)
         expect(result).to be_an(Array)
         expect(result.length).to eq(2)
-        expect(result.first).to be_a(Youtube::Transcript::Rb::TranscriptSnippet)
+        expect(result.first).to be_a(YoutubeRb::Transcript::TranscriptSnippet)
       end
 
       it "parses text content correctly" do

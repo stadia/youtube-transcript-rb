@@ -3,7 +3,7 @@
 require "spec_helper"
 require "webmock/rspec"
 
-RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
+RSpec.describe YoutubeRb::Transcript::TranscriptListFetcher do
   let(:http_client) { Faraday.new }
   let(:fetcher) { described_class.new(http_client: http_client) }
   let(:video_id) { "dQw4w9WgXcQ" }
@@ -78,7 +78,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
 
     it "returns a TranscriptList" do
       result = fetcher.fetch(video_id)
-      expect(result).to be_a(Youtube::Transcript::Rb::TranscriptList)
+      expect(result).to be_a(YoutubeRb::Transcript::TranscriptList)
     end
 
     it "returns a TranscriptList with the correct video_id" do
@@ -120,7 +120,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises IpBlocked error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::IpBlocked)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::IpBlocked)
       end
     end
 
@@ -135,7 +135,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises IpBlocked error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::IpBlocked)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::IpBlocked)
       end
     end
 
@@ -150,7 +150,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises YouTubeDataUnparsable error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::YouTubeDataUnparsable)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::YouTubeDataUnparsable)
       end
     end
 
@@ -169,7 +169,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises VideoUnavailable error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::VideoUnavailable)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::VideoUnavailable)
       end
     end
 
@@ -190,7 +190,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises InvalidVideoId error" do
-        expect { fetcher.fetch(url_video_id) }.to raise_error(Youtube::Transcript::Rb::InvalidVideoId)
+        expect { fetcher.fetch(url_video_id) }.to raise_error(YoutubeRb::Transcript::InvalidVideoId)
       end
     end
 
@@ -209,7 +209,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises AgeRestricted error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::AgeRestricted)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::AgeRestricted)
       end
     end
 
@@ -228,7 +228,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises RequestBlocked error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::RequestBlocked)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::RequestBlocked)
       end
     end
 
@@ -257,7 +257,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises VideoUnplayable error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::VideoUnplayable)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::VideoUnplayable)
       end
     end
 
@@ -274,7 +274,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises TranscriptsDisabled error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::TranscriptsDisabled)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::TranscriptsDisabled)
       end
     end
 
@@ -290,7 +290,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises TranscriptsDisabled error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::TranscriptsDisabled)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::TranscriptsDisabled)
       end
     end
 
@@ -311,7 +311,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises TranscriptsDisabled error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::TranscriptsDisabled)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::TranscriptsDisabled)
       end
     end
 
@@ -322,7 +322,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises YouTubeRequestFailed error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::YouTubeRequestFailed)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::YouTubeRequestFailed)
       end
     end
 
@@ -336,7 +336,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises YouTubeRequestFailed error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::YouTubeRequestFailed)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::YouTubeRequestFailed)
       end
     end
   end
@@ -369,7 +369,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
 
       it "retries after setting consent cookie" do
         result = fetcher.fetch(video_id)
-        expect(result).to be_a(Youtube::Transcript::Rb::TranscriptList)
+        expect(result).to be_a(YoutubeRb::Transcript::TranscriptList)
         expect(WebMock).to have_requested(:get, watch_url).times(2)
       end
 
@@ -400,7 +400,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises FailedToCreateConsentCookie error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::FailedToCreateConsentCookie)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::FailedToCreateConsentCookie)
       end
     end
 
@@ -411,7 +411,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises FailedToCreateConsentCookie error" do
-        expect { fetcher.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::FailedToCreateConsentCookie)
+        expect { fetcher.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::FailedToCreateConsentCookie)
       end
     end
   end
@@ -441,7 +441,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
 
     it "properly unescapes HTML entities" do
       result = fetcher.fetch(video_id)
-      expect(result).to be_a(Youtube::Transcript::Rb::TranscriptList)
+      expect(result).to be_a(YoutubeRb::Transcript::TranscriptList)
     end
   end
 
@@ -469,7 +469,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
 
       it "retries the request" do
         result = fetcher_with_proxy.fetch(video_id)
-        expect(result).to be_a(Youtube::Transcript::Rb::TranscriptList)
+        expect(result).to be_a(YoutubeRb::Transcript::TranscriptList)
         expect(WebMock).to have_requested(:post, innertube_url).times(3)
       end
     end
@@ -484,7 +484,7 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
       end
 
       it "raises RequestBlocked after exhausting retries" do
-        expect { fetcher_with_proxy.fetch(video_id) }.to raise_error(Youtube::Transcript::Rb::RequestBlocked)
+        expect { fetcher_with_proxy.fetch(video_id) }.to raise_error(YoutubeRb::Transcript::RequestBlocked)
         expect(WebMock).to have_requested(:post, innertube_url).times(3)
       end
     end
@@ -492,29 +492,29 @@ RSpec.describe Youtube::Transcript::Rb::TranscriptListFetcher do
 
   describe "PlayabilityStatus module" do
     it "defines OK status" do
-      expect(Youtube::Transcript::Rb::PlayabilityStatus::OK).to eq("OK")
+      expect(YoutubeRb::Transcript::PlayabilityStatus::OK).to eq("OK")
     end
 
     it "defines ERROR status" do
-      expect(Youtube::Transcript::Rb::PlayabilityStatus::ERROR).to eq("ERROR")
+      expect(YoutubeRb::Transcript::PlayabilityStatus::ERROR).to eq("ERROR")
     end
 
     it "defines LOGIN_REQUIRED status" do
-      expect(Youtube::Transcript::Rb::PlayabilityStatus::LOGIN_REQUIRED).to eq("LOGIN_REQUIRED")
+      expect(YoutubeRb::Transcript::PlayabilityStatus::LOGIN_REQUIRED).to eq("LOGIN_REQUIRED")
     end
   end
 
   describe "PlayabilityFailedReason module" do
     it "defines BOT_DETECTED reason" do
-      expect(Youtube::Transcript::Rb::PlayabilityFailedReason::BOT_DETECTED).to eq("Sign in to confirm you're not a bot")
+      expect(YoutubeRb::Transcript::PlayabilityFailedReason::BOT_DETECTED).to eq("Sign in to confirm you're not a bot")
     end
 
     it "defines AGE_RESTRICTED reason" do
-      expect(Youtube::Transcript::Rb::PlayabilityFailedReason::AGE_RESTRICTED).to eq("This video may be inappropriate for some users.")
+      expect(YoutubeRb::Transcript::PlayabilityFailedReason::AGE_RESTRICTED).to eq("This video may be inappropriate for some users.")
     end
 
     it "defines VIDEO_UNAVAILABLE reason" do
-      expect(Youtube::Transcript::Rb::PlayabilityFailedReason::VIDEO_UNAVAILABLE).to eq("This video is unavailable")
+      expect(YoutubeRb::Transcript::PlayabilityFailedReason::VIDEO_UNAVAILABLE).to eq("This video is unavailable")
     end
   end
 end

@@ -47,9 +47,9 @@ gem install youtube-transcript-rb
 The easiest way to get a transcript for a given video is to execute:
 
 ```ruby
-require 'youtube/transcript/rb'
+require 'youtube_rb/transcript'
 
-api = Youtube::Transcript::Rb::YouTubeTranscriptApi.new
+api = YoutubeRb::Transcript::YouTubeTranscriptApi.new
 api.fetch(video_id)
 ```
 
@@ -62,14 +62,14 @@ api.fetch(video_id)
 This will return a `FetchedTranscript` object looking somewhat like this:
 
 ```ruby
-#<Youtube::Transcript::Rb::FetchedTranscript
+#<YoutubeRb::Transcript::FetchedTranscript
   @video_id="12345",
   @language="English",
   @language_code="en",
   @is_generated=false,
   @snippets=[
-    #<Youtube::Transcript::Rb::TranscriptSnippet @text="Hey there", @start=0.0, @duration=1.54>,
-    #<Youtube::Transcript::Rb::TranscriptSnippet @text="how are you", @start=1.54, @duration=4.16>,
+    #<YoutubeRb::Transcript::TranscriptSnippet @text="Hey there", @start=0.0, @duration=1.54>,
+    #<YoutubeRb::Transcript::TranscriptSnippet @text="how are you", @start=1.54, @duration=4.16>,
     # ...
   ]
 >
@@ -78,7 +78,7 @@ This will return a `FetchedTranscript` object looking somewhat like this:
 This object implements `Enumerable`, so you can iterate over it:
 
 ```ruby
-api = Youtube::Transcript::Rb::YouTubeTranscriptApi.new
+api = YoutubeRb::Transcript::YouTubeTranscriptApi.new
 fetched_transcript = api.fetch(video_id)
 
 # is iterable
@@ -117,13 +117,13 @@ an array of hashes:
 You can also use the convenience methods on the module directly:
 
 ```ruby
-require 'youtube/transcript/rb'
+require 'youtube_rb/transcript'
 
 # Fetch a transcript
-transcript = Youtube::Transcript::Rb.fetch(video_id)
+transcript = YoutubeRb::Transcript.fetch(video_id)
 
 # List available transcripts
-transcript_list = Youtube::Transcript::Rb.list(video_id)
+transcript_list = YoutubeRb::Transcript.list(video_id)
 ```
 
 ### Retrieve different languages
@@ -132,7 +132,7 @@ You can add the `languages` param if you want to make sure the transcripts are r
 (it defaults to english).
 
 ```ruby
-Youtube::Transcript::Rb::YouTubeTranscriptApi.new.fetch(video_id, languages: ['de', 'en'])
+YoutubeRb::Transcript::YouTubeTranscriptApi.new.fetch(video_id, languages: ['de', 'en'])
 ```
 
 It's an array of language codes in a descending priority. In this example it will first try to fetch the german
@@ -142,7 +142,7 @@ which languages are available first, [have a look at `list`](#list-available-tra
 If you only want one language, you still need to format the `languages` argument as an array:
 
 ```ruby
-Youtube::Transcript::Rb::YouTubeTranscriptApi.new.fetch(video_id, languages: ['de'])
+YoutubeRb::Transcript::YouTubeTranscriptApi.new.fetch(video_id, languages: ['de'])
 ```
 
 ### Preserve formatting
@@ -151,7 +151,7 @@ You can also add `preserve_formatting: true` if you'd like to keep HTML formatti
 and `<b>` (bold).
 
 ```ruby
-Youtube::Transcript::Rb::YouTubeTranscriptApi.new.fetch(video_id, languages: ['de', 'en'], preserve_formatting: true)
+YoutubeRb::Transcript::YouTubeTranscriptApi.new.fetch(video_id, languages: ['de', 'en'], preserve_formatting: true)
 ```
 
 ### List available transcripts
@@ -159,7 +159,7 @@ Youtube::Transcript::Rb::YouTubeTranscriptApi.new.fetch(video_id, languages: ['d
 If you want to list all transcripts which are available for a given video you can call:
 
 ```ruby
-api = Youtube::Transcript::Rb::YouTubeTranscriptApi.new
+api = YoutubeRb::Transcript::YouTubeTranscriptApi.new
 transcript_list = api.list(video_id)
 ```
 
@@ -220,9 +220,9 @@ puts translated_transcript.fetch
 ### By example
 
 ```ruby
-require 'youtube/transcript/rb'
+require 'youtube_rb/transcript'
 
-api = Youtube::Transcript::Rb::YouTubeTranscriptApi.new
+api = YoutubeRb::Transcript::YouTubeTranscriptApi.new
 
 # retrieve the available transcripts
 transcript_list = api.list('video_id')
@@ -262,7 +262,7 @@ transcript = transcript_list.find_generated_transcript(['de', 'en'])
 You can fetch transcripts for multiple videos at once:
 
 ```ruby
-api = Youtube::Transcript::Rb::YouTubeTranscriptApi.new
+api = YoutubeRb::Transcript::YouTubeTranscriptApi.new
 
 # Fetch multiple videos
 transcripts = api.fetch_all(['video1', 'video2', 'video3'])
@@ -297,14 +297,14 @@ The `Formatters` module provides a few basic formatters:
 Here is how to import from the `Formatters` module:
 
 ```ruby
-require 'youtube/transcript/rb'
+require 'youtube_rb/transcript'
 
 # Some provided formatter classes, each outputs a different string format.
-Youtube::Transcript::Rb::Formatters::JSONFormatter
-Youtube::Transcript::Rb::Formatters::TextFormatter
-Youtube::Transcript::Rb::Formatters::PrettyPrintFormatter
-Youtube::Transcript::Rb::Formatters::WebVTTFormatter
-Youtube::Transcript::Rb::Formatters::SRTFormatter
+YoutubeRb::Transcript::Formatters::JSONFormatter
+YoutubeRb::Transcript::Formatters::TextFormatter
+YoutubeRb::Transcript::Formatters::PrettyPrintFormatter
+YoutubeRb::Transcript::Formatters::WebVTTFormatter
+YoutubeRb::Transcript::Formatters::SRTFormatter
 ```
 
 ### Formatter Example
@@ -312,12 +312,12 @@ Youtube::Transcript::Rb::Formatters::SRTFormatter
 Let's say we wanted to retrieve a transcript and store it to a JSON file. That would look something like this:
 
 ```ruby
-require 'youtube/transcript/rb'
+require 'youtube_rb/transcript'
 
-api = Youtube::Transcript::Rb::YouTubeTranscriptApi.new
+api = YoutubeRb::Transcript::YouTubeTranscriptApi.new
 transcript = api.fetch(video_id)
 
-formatter = Youtube::Transcript::Rb::Formatters::JSONFormatter.new
+formatter = YoutubeRb::Transcript::Formatters::JSONFormatter.new
 
 # .format_transcript(transcript) turns the transcript into a JSON string.
 json_formatted = formatter.format_transcript(transcript)
@@ -334,7 +334,7 @@ Since `JSONFormatter` leverages `JSON.generate` you can also forward keyword arg
 `.format_transcript(transcript)` such as making your file output prettier:
 
 ```ruby
-json_formatted = Youtube::Transcript::Rb::Formatters::JSONFormatter.new.format_transcript(
+json_formatted = YoutubeRb::Transcript::Formatters::JSONFormatter.new.format_transcript(
   transcript, 
   indent: '  ',
   space: ' '
@@ -346,9 +346,9 @@ json_formatted = Youtube::Transcript::Rb::Formatters::JSONFormatter.new.format_t
 You can also use the `FormatterLoader` to dynamically load formatters by name:
 
 ```ruby
-require 'youtube/transcript/rb'
+require 'youtube_rb/transcript'
 
-loader = Youtube::Transcript::Rb::Formatters::FormatterLoader.new
+loader = YoutubeRb::Transcript::Formatters::FormatterLoader.new
 
 # Load by type name: "json", "pretty", "text", "webvtt", "srt"
 formatter = loader.load("json")
@@ -364,7 +364,7 @@ You can implement your own formatter class. Just inherit from the `Formatter` ba
 `format_transcript` and `format_transcripts` methods which should ultimately return a string:
 
 ```ruby
-class MyCustomFormatter < Youtube::Transcript::Rb::Formatters::Formatter
+class MyCustomFormatter < YoutubeRb::Transcript::Formatters::Formatter
   def format_transcript(transcript, **options)
     # Do your custom work in here, but return a string.
     'your processed output data as a string.'
@@ -382,28 +382,28 @@ end
 The library provides a comprehensive set of exceptions for different error scenarios:
 
 ```ruby
-require 'youtube/transcript/rb'
+require 'youtube_rb/transcript'
 
 begin
-  transcript = Youtube::Transcript::Rb.fetch(video_id)
-rescue Youtube::Transcript::Rb::TranscriptsDisabled => e
+  transcript = YoutubeRb::Transcript.fetch(video_id)
+rescue YoutubeRb::Transcript::TranscriptsDisabled => e
   puts "Subtitles are disabled for this video"
-rescue Youtube::Transcript::Rb::NoTranscriptFound => e
+rescue YoutubeRb::Transcript::NoTranscriptFound => e
   puts "No transcript found for the requested languages"
   puts e.requested_language_codes
-rescue Youtube::Transcript::Rb::NoTranscriptAvailable => e
+rescue YoutubeRb::Transcript::NoTranscriptAvailable => e
   puts "No transcripts are available for this video"
-rescue Youtube::Transcript::Rb::VideoUnavailable => e
+rescue YoutubeRb::Transcript::VideoUnavailable => e
   puts "The video is no longer available"
-rescue Youtube::Transcript::Rb::TooManyRequests => e
+rescue YoutubeRb::Transcript::TooManyRequests => e
   puts "Rate limited by YouTube"
-rescue Youtube::Transcript::Rb::RequestBlocked => e
+rescue YoutubeRb::Transcript::RequestBlocked => e
   puts "Request blocked by YouTube"
-rescue Youtube::Transcript::Rb::IpBlocked => e
+rescue YoutubeRb::Transcript::IpBlocked => e
   puts "Your IP has been blocked by YouTube"
-rescue Youtube::Transcript::Rb::PoTokenRequired => e
+rescue YoutubeRb::Transcript::PoTokenRequired => e
   puts "PO token required - this is a YouTube limitation"
-rescue Youtube::Transcript::Rb::CouldNotRetrieveTranscript => e
+rescue YoutubeRb::Transcript::CouldNotRetrieveTranscript => e
   puts "Could not retrieve transcript: #{e.message}"
 end
 ```
@@ -456,11 +456,11 @@ http_client = Faraday.new do |conn|
   conn.adapter Faraday.default_adapter
 end
 
-api = Youtube::Transcript::Rb::YouTubeTranscriptApi.new(http_client: http_client)
+api = YoutubeRb::Transcript::YouTubeTranscriptApi.new(http_client: http_client)
 api.fetch(video_id)
 
 # Share same connection between two instances
-api_2 = Youtube::Transcript::Rb::YouTubeTranscriptApi.new(http_client: http_client)
+api_2 = YoutubeRb::Transcript::YouTubeTranscriptApi.new(http_client: http_client)
 api_2.fetch(video_id)
 ```
 

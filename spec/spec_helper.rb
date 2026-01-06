@@ -15,7 +15,7 @@
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require "bundler/setup"
-require "youtube/transcript/rb"
+require "youtube_rb/transcript"
 require "webmock/rspec"
 require "faraday"
 

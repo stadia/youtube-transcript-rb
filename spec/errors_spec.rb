@@ -1,65 +1,65 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "youtube/transcript/rb"
+require "youtube_rb/transcript"
 
-RSpec.describe Youtube::Transcript::Rb do
+RSpec.describe YoutubeRb::Transcript do
   describe "Error hierarchy" do
     it "has Error as the base class" do
-      expect(Youtube::Transcript::Rb::Error).to be < StandardError
+      expect(YoutubeRb::Transcript::Error).to be < StandardError
     end
 
     it "has CouldNotRetrieveTranscript inheriting from Error" do
-      expect(Youtube::Transcript::Rb::CouldNotRetrieveTranscript).to be < Youtube::Transcript::Rb::Error
+      expect(YoutubeRb::Transcript::CouldNotRetrieveTranscript).to be < YoutubeRb::Transcript::Error
     end
 
     describe "error classes inherit from CouldNotRetrieveTranscript" do
       [
-        Youtube::Transcript::Rb::YouTubeDataUnparsable,
-        Youtube::Transcript::Rb::YouTubeRequestFailed,
-        Youtube::Transcript::Rb::VideoUnplayable,
-        Youtube::Transcript::Rb::VideoUnavailable,
-        Youtube::Transcript::Rb::InvalidVideoId,
-        Youtube::Transcript::Rb::RequestBlocked,
-        Youtube::Transcript::Rb::IpBlocked,
-        Youtube::Transcript::Rb::TooManyRequests,
-        Youtube::Transcript::Rb::TranscriptsDisabled,
-        Youtube::Transcript::Rb::AgeRestricted,
-        Youtube::Transcript::Rb::NotTranslatable,
-        Youtube::Transcript::Rb::TranslationLanguageNotAvailable,
-        Youtube::Transcript::Rb::FailedToCreateConsentCookie,
-        Youtube::Transcript::Rb::NoTranscriptFound,
-        Youtube::Transcript::Rb::NoTranscriptAvailable,
-        Youtube::Transcript::Rb::PoTokenRequired
+        YoutubeRb::Transcript::YouTubeDataUnparsable,
+        YoutubeRb::Transcript::YouTubeRequestFailed,
+        YoutubeRb::Transcript::VideoUnplayable,
+        YoutubeRb::Transcript::VideoUnavailable,
+        YoutubeRb::Transcript::InvalidVideoId,
+        YoutubeRb::Transcript::RequestBlocked,
+        YoutubeRb::Transcript::IpBlocked,
+        YoutubeRb::Transcript::TooManyRequests,
+        YoutubeRb::Transcript::TranscriptsDisabled,
+        YoutubeRb::Transcript::AgeRestricted,
+        YoutubeRb::Transcript::NotTranslatable,
+        YoutubeRb::Transcript::TranslationLanguageNotAvailable,
+        YoutubeRb::Transcript::FailedToCreateConsentCookie,
+        YoutubeRb::Transcript::NoTranscriptFound,
+        YoutubeRb::Transcript::NoTranscriptAvailable,
+        YoutubeRb::Transcript::PoTokenRequired
       ].each do |error_class|
         it "#{error_class} inherits from CouldNotRetrieveTranscript" do
-          expect(error_class).to be < Youtube::Transcript::Rb::CouldNotRetrieveTranscript
+          expect(error_class).to be < YoutubeRb::Transcript::CouldNotRetrieveTranscript
         end
       end
     end
   end
 
-  describe Youtube::Transcript::Rb::CouldNotRetrieveTranscript do
+  describe YoutubeRb::Transcript::CouldNotRetrieveTranscript do
     let(:video_id) { "test_video_123" }
 
     it "stores the video_id" do
       # Using a subclass since CouldNotRetrieveTranscript needs CAUSE_MESSAGE
-      error = Youtube::Transcript::Rb::VideoUnavailable.new(video_id)
+      error = YoutubeRb::Transcript::VideoUnavailable.new(video_id)
       expect(error.video_id).to eq(video_id)
     end
 
     it "includes video URL in error message" do
-      error = Youtube::Transcript::Rb::VideoUnavailable.new(video_id)
+      error = YoutubeRb::Transcript::VideoUnavailable.new(video_id)
       expect(error.message).to include("https://www.youtube.com/watch?v=#{video_id}")
     end
 
     it "includes cause message in error message" do
-      error = Youtube::Transcript::Rb::VideoUnavailable.new(video_id)
+      error = YoutubeRb::Transcript::VideoUnavailable.new(video_id)
       expect(error.message).to include("The video is no longer available")
     end
   end
 
-  describe Youtube::Transcript::Rb::VideoUnavailable do
+  describe YoutubeRb::Transcript::VideoUnavailable do
     let(:video_id) { "unavailable_video" }
     let(:error) { described_class.new(video_id) }
 
@@ -68,7 +68,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::TranscriptsDisabled do
+  describe YoutubeRb::Transcript::TranscriptsDisabled do
     let(:video_id) { "disabled_video" }
     let(:error) { described_class.new(video_id) }
 
@@ -77,7 +77,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::TooManyRequests do
+  describe YoutubeRb::Transcript::TooManyRequests do
     let(:video_id) { "rate_limited" }
     let(:error) { described_class.new(video_id) }
 
@@ -86,7 +86,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::PoTokenRequired do
+  describe YoutubeRb::Transcript::PoTokenRequired do
     let(:video_id) { "po_token_video" }
     let(:error) { described_class.new(video_id) }
 
@@ -95,7 +95,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::InvalidVideoId do
+  describe YoutubeRb::Transcript::InvalidVideoId do
     let(:video_id) { "https://www.youtube.com/watch?v=1234" }
     let(:error) { described_class.new(video_id) }
 
@@ -105,7 +105,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::YouTubeRequestFailed do
+  describe YoutubeRb::Transcript::YouTubeRequestFailed do
     let(:video_id) { "failed_request" }
     let(:http_error) { StandardError.new("Connection refused") }
     let(:error) { described_class.new(video_id, http_error) }
@@ -119,7 +119,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::VideoUnplayable do
+  describe YoutubeRb::Transcript::VideoUnplayable do
     let(:video_id) { "unplayable_video" }
 
     context "with reason only" do
@@ -157,7 +157,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::NoTranscriptFound do
+  describe YoutubeRb::Transcript::NoTranscriptFound do
     let(:video_id) { "no_transcript" }
     let(:requested_languages) { ["ko", "ja"] }
     let(:transcript_data) { double("TranscriptList", to_s: "Available: en, es") }
@@ -181,7 +181,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::RequestBlocked do
+  describe YoutubeRb::Transcript::RequestBlocked do
     let(:video_id) { "blocked_video" }
     let(:error) { described_class.new(video_id) }
 
@@ -194,12 +194,12 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::IpBlocked do
+  describe YoutubeRb::Transcript::IpBlocked do
     let(:video_id) { "ip_blocked" }
     let(:error) { described_class.new(video_id) }
 
     it "inherits from RequestBlocked" do
-      expect(described_class).to be < Youtube::Transcript::Rb::RequestBlocked
+      expect(described_class).to be < YoutubeRb::Transcript::RequestBlocked
     end
 
     it "mentions IP or proxies as workaround" do
@@ -207,7 +207,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::AgeRestricted do
+  describe YoutubeRb::Transcript::AgeRestricted do
     let(:video_id) { "age_restricted" }
     let(:error) { described_class.new(video_id) }
 
@@ -220,7 +220,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::NotTranslatable do
+  describe YoutubeRb::Transcript::NotTranslatable do
     let(:video_id) { "not_translatable" }
     let(:error) { described_class.new(video_id) }
 
@@ -229,7 +229,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::TranslationLanguageNotAvailable do
+  describe YoutubeRb::Transcript::TranslationLanguageNotAvailable do
     let(:video_id) { "translation_unavailable" }
     let(:error) { described_class.new(video_id) }
 

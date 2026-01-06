@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/youtube/transcript/rb/version"
+require_relative "lib/youtube_rb/transcript/version"
 
 Gem::Specification.new do |spec|
   spec.name = "youtube-transcript-rb"
-  spec.version = Youtube::Transcript::Rb::VERSION
+  spec.version = YoutubeRb::Transcript::VERSION
   spec.authors = ["jeff.dean"]
   spec.email = ["stadia@gmail.com"]
 

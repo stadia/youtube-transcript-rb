@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "youtube/transcript/rb"
+require "youtube_rb/transcript"
 
-RSpec.describe Youtube::Transcript::Rb do
-  describe Youtube::Transcript::Rb::TranslationLanguage do
+RSpec.describe YoutubeRb::Transcript do
+  describe YoutubeRb::Transcript::TranslationLanguage do
     let(:language) { described_class.new(language: "Spanish", language_code: "es") }
 
     describe "#initialize" do
@@ -18,7 +18,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::TranscriptSnippet do
+  describe YoutubeRb::Transcript::TranscriptSnippet do
     let(:snippet) { described_class.new(text: "Hello world", start: 1.5, duration: 2.0) }
 
     describe "#initialize" do
@@ -58,7 +58,7 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::FetchedTranscript do
+  describe YoutubeRb::Transcript::FetchedTranscript do
     let(:transcript) do
       described_class.new(
         video_id: "test_video",
@@ -68,8 +68,8 @@ RSpec.describe Youtube::Transcript::Rb do
       )
     end
 
-    let(:snippet1) { Youtube::Transcript::Rb::TranscriptSnippet.new(text: "Hello", start: 0.0, duration: 1.5) }
-    let(:snippet2) { Youtube::Transcript::Rb::TranscriptSnippet.new(text: "World", start: 1.5, duration: 2.0) }
+    let(:snippet1) { YoutubeRb::Transcript::TranscriptSnippet.new(text: "Hello", start: 0.0, duration: 1.5) }
+    let(:snippet2) { YoutubeRb::Transcript::TranscriptSnippet.new(text: "World", start: 1.5, duration: 2.0) }
 
     describe "#initialize" do
       it "sets the video_id" do
@@ -214,12 +214,12 @@ RSpec.describe Youtube::Transcript::Rb do
     end
   end
 
-  describe Youtube::Transcript::Rb::Transcript do
+  describe YoutubeRb::Transcript::TranscriptMetadata do
     let(:http_client) { double("Faraday::Connection") }
     let(:translation_languages) do
       [
-        Youtube::Transcript::Rb::TranslationLanguage.new(language: "Spanish", language_code: "es"),
-        Youtube::Transcript::Rb::TranslationLanguage.new(language: "French", language_code: "fr")
+        YoutubeRb::Transcript::TranslationLanguage.new(language: "Spanish", language_code: "es"),
+        YoutubeRb::Transcript::TranslationLanguage.new(language: "French", language_code: "fr")
       ]
     end
 
@@ -295,13 +295,13 @@ RSpec.describe Youtube::Transcript::Rb do
       it "raises NotTranslatable when not translatable" do
         expect {
           transcript_without_translations.translate("es")
-        }.to raise_error(Youtube::Transcript::Rb::NotTranslatable)
+        }.to raise_error(YoutubeRb::Transcript::NotTranslatable)
       end
 
       it "raises TranslationLanguageNotAvailable for unavailable language" do
         expect {
           transcript.translate("de")
-        }.to raise_error(Youtube::Transcript::Rb::TranslationLanguageNotAvailable)
+        }.to raise_error(YoutubeRb::Transcript::TranslationLanguageNotAvailable)
       end
 
       it "returns a new Transcript for available language" do
@@ -347,7 +347,7 @@ RSpec.describe Youtube::Transcript::Rb do
 
       it "returns a FetchedTranscript" do
         result = transcript.fetch
-        expect(result).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+        expect(result).to be_a(YoutubeRb::Transcript::FetchedTranscript)
       end
 
       it "parses the transcript snippets" do
@@ -376,18 +376,18 @@ RSpec.describe Youtube::Transcript::Rb do
           translation_languages: []
         )
 
-        expect { po_transcript.fetch }.to raise_error(Youtube::Transcript::Rb::PoTokenRequired)
+        expect { po_transcript.fetch }.to raise_error(YoutubeRb::Transcript::PoTokenRequired)
       end
 
       context "when HTTP error occurs" do
         it "raises IpBlocked for 429 status" do
           allow(http_client).to receive(:get).and_return(double("Response", status: 429, body: ""))
-          expect { transcript.fetch }.to raise_error(Youtube::Transcript::Rb::IpBlocked)
+          expect { transcript.fetch }.to raise_error(YoutubeRb::Transcript::IpBlocked)
         end
 
         it "raises YouTubeRequestFailed for 4xx/5xx status" do
           allow(http_client).to receive(:get).and_return(double("Response", status: 500, body: ""))
-          expect { transcript.fetch }.to raise_error(Youtube::Transcript::Rb::YouTubeRequestFailed)
+          expect { transcript.fetch }.to raise_error(YoutubeRb::Transcript::YouTubeRequestFailed)
         end
       end
 

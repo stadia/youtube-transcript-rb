@@ -27,14 +27,14 @@ RSpec.describe "Integration Tests", :integration do
   let(:ted_talk_video_id) { "8jPQjjsBbIc" } # TED Talk - usually has good transcripts
   let(:google_video_id) { "dQw4w9WgXcQ" }   # Rick Astley - Never Gonna Give You Up (very stable)
 
-  describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
+  describe YoutubeRb::Transcript::YouTubeTranscriptApi do
     let(:api) { described_class.new }
 
     describe "#list" do
       it "fetches available transcripts for a video" do
         transcript_list = api.list(ted_talk_video_id)
 
-        expect(transcript_list).to be_a(Youtube::Transcript::Rb::TranscriptList)
+        expect(transcript_list).to be_a(YoutubeRb::Transcript::TranscriptMetadataList)
         expect(transcript_list.video_id).to eq(ted_talk_video_id)
         expect(transcript_list.count).to be > 0
 
@@ -47,7 +47,7 @@ RSpec.describe "Integration Tests", :integration do
         transcript_list = api.list(ted_talk_video_id)
 
         transcript_list.each do |transcript|
-          expect(transcript).to be_a(Youtube::Transcript::Rb::Transcript)
+          expect(transcript).to be_a(YoutubeRb::Transcript::TranscriptMetadata)
           expect(transcript.language_code).to be_a(String)
           expect(transcript.language).to be_a(String)
         end
@@ -58,12 +58,12 @@ RSpec.describe "Integration Tests", :integration do
       it "fetches English transcript by default" do
         transcript = api.fetch(ted_talk_video_id)
 
-        expect(transcript).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+        expect(transcript).to be_a(YoutubeRb::Transcript::FetchedTranscript)
         expect(transcript.video_id).to eq(ted_talk_video_id)
         expect(transcript.snippets).not_to be_empty
 
         first_snippet = transcript.first
-        expect(first_snippet).to be_a(Youtube::Transcript::Rb::TranscriptSnippet)
+        expect(first_snippet).to be_a(YoutubeRb::Transcript::TranscriptMetadataSnippet)
         expect(first_snippet.text).to be_a(String)
         expect(first_snippet.start).to be_a(Float)
         expect(first_snippet.duration).to be_a(Float)
@@ -91,7 +91,7 @@ RSpec.describe "Integration Tests", :integration do
       it "preserves HTML formatting when requested" do
         transcript = api.fetch(ted_talk_video_id, preserve_formatting: true)
 
-        expect(transcript).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+        expect(transcript).to be_a(YoutubeRb::Transcript::FetchedTranscript)
         # Note: Not all videos have HTML formatting, so we just verify it doesn't break
       end
     end
@@ -103,7 +103,7 @@ RSpec.describe "Integration Tests", :integration do
 
         expect(results).to be_a(Hash)
         expect(results.keys).to include(ted_talk_video_id)
-        expect(results[ted_talk_video_id]).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+        expect(results[ted_talk_video_id]).to be_a(YoutubeRb::Transcript::FetchedTranscript)
       end
 
       it "continues on error when option is set" do
@@ -122,12 +122,12 @@ RSpec.describe "Integration Tests", :integration do
     end
   end
 
-  describe Youtube::Transcript::Rb do
+  describe YoutubeRb::Transcript do
     describe ".fetch" do
       it "provides convenience method for fetching transcripts" do
         transcript = described_class.fetch(ted_talk_video_id)
 
-        expect(transcript).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+        expect(transcript).to be_a(YoutubeRb::Transcript::FetchedTranscript)
         expect(transcript.snippets).not_to be_empty
       end
     end
@@ -136,7 +136,7 @@ RSpec.describe "Integration Tests", :integration do
       it "provides convenience method for listing transcripts" do
         transcript_list = described_class.list(ted_talk_video_id)
 
-        expect(transcript_list).to be_a(Youtube::Transcript::Rb::TranscriptList)
+        expect(transcript_list).to be_a(YoutubeRb::Transcript::TranscriptMetadataList)
         expect(transcript_list.count).to be > 0
       end
     end
@@ -144,13 +144,13 @@ RSpec.describe "Integration Tests", :integration do
 
   describe "Transcript Translation" do
     it "translates a transcript to another language" do
-      api = Youtube::Transcript::Rb::YouTubeTranscriptApi.new
+      api = YoutubeRb::Transcript::YouTubeTranscriptApi.new
       transcript_list = api.list(ted_talk_video_id)
 
       # Find an English transcript
       begin
         transcript = transcript_list.find_transcript(["en"])
-      rescue Youtube::Transcript::Rb::NoTranscriptFound
+      rescue YoutubeRb::Transcript::NoTranscriptFound
         skip "No English transcript available for this video"
       end
 
@@ -160,14 +160,14 @@ RSpec.describe "Integration Tests", :integration do
           translated = transcript.translate("es")
           fetched = translated.fetch
 
-          expect(fetched).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+          expect(fetched).to be_a(YoutubeRb::Transcript::FetchedTranscript)
           expect(fetched.language_code).to eq("es")
           expect(fetched.snippets).not_to be_empty
 
           puts "\nTranslated to Spanish: #{fetched.first.text[0..50]}..."
-        rescue Youtube::Transcript::Rb::TranslationLanguageNotAvailable
+        rescue YoutubeRb::Transcript::TranslationLanguageNotAvailable
           skip "Spanish translation not available for this video"
-        rescue Youtube::Transcript::Rb::IpBlocked
+        rescue YoutubeRb::Transcript::IpBlocked
           skip "IP blocked by YouTube - try again later or use a proxy"
         end
       else
@@ -177,10 +177,10 @@ RSpec.describe "Integration Tests", :integration do
   end
 
   describe "Formatters with Real Data" do
-    let(:api) { Youtube::Transcript::Rb::YouTubeTranscriptApi.new }
+    let(:api) { YoutubeRb::Transcript::YouTubeTranscriptApi.new }
     let(:transcript) { api.fetch(ted_talk_video_id) }
 
-    describe Youtube::Transcript::Rb::Formatters::JSONFormatter do
+    describe YoutubeRb::Transcript::Formatters::JSONFormatter do
       it "formats real transcript as JSON" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)
@@ -192,7 +192,7 @@ RSpec.describe "Integration Tests", :integration do
       end
     end
 
-    describe Youtube::Transcript::Rb::Formatters::TextFormatter do
+    describe YoutubeRb::Transcript::Formatters::TextFormatter do
       it "formats real transcript as plain text" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)
@@ -205,7 +205,7 @@ RSpec.describe "Integration Tests", :integration do
       end
     end
 
-    describe Youtube::Transcript::Rb::Formatters::SRTFormatter do
+    describe YoutubeRb::Transcript::Formatters::SRTFormatter do
       it "formats real transcript as SRT" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)
@@ -218,7 +218,7 @@ RSpec.describe "Integration Tests", :integration do
       end
     end
 
-    describe Youtube::Transcript::Rb::Formatters::WebVTTFormatter do
+    describe YoutubeRb::Transcript::Formatters::WebVTTFormatter do
       it "formats real transcript as WebVTT" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)
@@ -231,7 +231,7 @@ RSpec.describe "Integration Tests", :integration do
       end
     end
 
-    describe Youtube::Transcript::Rb::Formatters::PrettyPrintFormatter do
+    describe YoutubeRb::Transcript::Formatters::PrettyPrintFormatter do
       it "formats real transcript as pretty-printed output" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)
@@ -245,18 +245,18 @@ RSpec.describe "Integration Tests", :integration do
   end
 
   describe "Error Handling" do
-    let(:api) { Youtube::Transcript::Rb::YouTubeTranscriptApi.new }
+    let(:api) { YoutubeRb::Transcript::YouTubeTranscriptApi.new }
 
     it "raises NoTranscriptFound for unavailable language" do
       expect {
         api.fetch(ted_talk_video_id, languages: ["xx"]) # Invalid language code
-      }.to raise_error(Youtube::Transcript::Rb::NoTranscriptFound)
+      }.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
     end
 
     it "raises appropriate error for invalid video ID" do
       expect {
         api.fetch("this_is_not_a_valid_video_id_12345")
-      }.to raise_error(Youtube::Transcript::Rb::CouldNotRetrieveTranscript)
+      }.to raise_error(YoutubeRb::Transcript::CouldNotRetrieveTranscript)
     end
 
     it "raises TranscriptsDisabled for video without transcripts" do
@@ -267,7 +267,7 @@ RSpec.describe "Integration Tests", :integration do
   end
 
   describe "FetchedTranscript Interface" do
-    let(:api) { Youtube::Transcript::Rb::YouTubeTranscriptApi.new }
+    let(:api) { YoutubeRb::Transcript::YouTubeTranscriptApi.new }
     let(:transcript) { api.fetch(ted_talk_video_id) }
 
     it "is enumerable" do
@@ -276,12 +276,12 @@ RSpec.describe "Integration Tests", :integration do
       expect(transcript).to respond_to(:select)
       expect(transcript).to respond_to(:first)
       # Note: Enumerable doesn't provide #last by default, but we can use to_a.last
-      expect(transcript.to_a.last).to be_a(Youtube::Transcript::Rb::TranscriptSnippet)
+      expect(transcript.to_a.last).to be_a(YoutubeRb::Transcript::TranscriptMetadataSnippet)
     end
 
     it "is indexable" do
-      expect(transcript[0]).to be_a(Youtube::Transcript::Rb::TranscriptSnippet)
-      expect(transcript[-1]).to be_a(Youtube::Transcript::Rb::TranscriptSnippet)
+      expect(transcript[0]).to be_a(YoutubeRb::Transcript::TranscriptMetadataSnippet)
+      expect(transcript[-1]).to be_a(YoutubeRb::Transcript::TranscriptMetadataSnippet)
     end
 
     it "has length" do
@@ -306,7 +306,7 @@ RSpec.describe "Integration Tests", :integration do
   end
 
   describe "TranscriptList Interface" do
-    let(:api) { Youtube::Transcript::Rb::YouTubeTranscriptApi.new }
+    let(:api) { YoutubeRb::Transcript::YouTubeTranscriptApi.new }
     let(:transcript_list) { api.list(ted_talk_video_id) }
 
     it "is enumerable" do
@@ -317,7 +317,7 @@ RSpec.describe "Integration Tests", :integration do
 
     it "finds transcripts by language" do
       transcript = transcript_list.find_transcript(["en"])
-      expect(transcript).to be_a(Youtube::Transcript::Rb::Transcript)
+      expect(transcript).to be_a(YoutubeRb::Transcript::TranscriptMetadata)
     end
 
     it "provides string representation" do
@@ -330,7 +330,7 @@ RSpec.describe "Integration Tests", :integration do
   end
 
   describe "Transcript Object" do
-    let(:api) { Youtube::Transcript::Rb::YouTubeTranscriptApi.new }
+    let(:api) { YoutubeRb::Transcript::YouTubeTranscriptApi.new }
     let(:transcript_list) { api.list(ted_talk_video_id) }
     let(:transcript) { transcript_list.find_transcript(["en"]) }
 
@@ -349,7 +349,7 @@ RSpec.describe "Integration Tests", :integration do
     it "fetches transcript data" do
       fetched = transcript.fetch
 
-      expect(fetched).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+      expect(fetched).to be_a(YoutubeRb::Transcript::FetchedTranscript)
       expect(fetched.snippets).not_to be_empty
     end
 

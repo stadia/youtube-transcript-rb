@@ -3,7 +3,7 @@
 require "spec_helper"
 require "webmock/rspec"
 
-RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
+RSpec.describe YoutubeRb::Transcript::YouTubeTranscriptApi do
   let(:api) { described_class.new }
   let(:video_id) { "dQw4w9WgXcQ" }
   let(:api_key) { "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8" }
@@ -84,7 +84,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
 
     it "creates a TranscriptListFetcher" do
       api = described_class.new
-      expect(api.instance_variable_get(:@fetcher)).to be_a(Youtube::Transcript::Rb::TranscriptListFetcher)
+      expect(api.instance_variable_get(:@fetcher)).to be_a(YoutubeRb::Transcript::TranscriptListFetcher)
     end
   end
 
@@ -102,7 +102,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
 
     it "returns a FetchedTranscript" do
       result = api.fetch(video_id)
-      expect(result).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+      expect(result).to be_a(YoutubeRb::Transcript::FetchedTranscript)
     end
 
     it "fetches the transcript with correct video_id" do
@@ -138,7 +138,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
     it "raises NoTranscriptFound when no language matches" do
       expect {
         api.fetch(video_id, languages: ["ja", "ko", "zh"])
-      }.to raise_error(Youtube::Transcript::Rb::NoTranscriptFound)
+      }.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
     end
 
     context "with preserve_formatting option" do
@@ -182,7 +182,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
 
     it "returns a TranscriptList" do
       result = api.list(video_id)
-      expect(result).to be_a(Youtube::Transcript::Rb::TranscriptList)
+      expect(result).to be_a(YoutubeRb::Transcript::TranscriptList)
     end
 
     it "returns a list with the correct video_id" do
@@ -213,7 +213,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
       end
 
       it "raises VideoUnavailable error" do
-        expect { api.list(video_id) }.to raise_error(Youtube::Transcript::Rb::VideoUnavailable)
+        expect { api.list(video_id) }.to raise_error(YoutubeRb::Transcript::VideoUnavailable)
       end
     end
 
@@ -227,7 +227,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
       end
 
       it "raises TranscriptsDisabled error" do
-        expect { api.list(video_id) }.to raise_error(Youtube::Transcript::Rb::TranscriptsDisabled)
+        expect { api.list(video_id) }.to raise_error(YoutubeRb::Transcript::TranscriptsDisabled)
       end
     end
   end
@@ -272,7 +272,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
     it "fetches all video transcripts" do
       results = api.fetch_all(video_ids)
       results.each do |vid, transcript|
-        expect(transcript).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+        expect(transcript).to be_a(YoutubeRb::Transcript::FetchedTranscript)
         expect(transcript.video_id).to eq(vid)
       end
     end
@@ -292,7 +292,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
       expect(yielded.length).to eq(3)
       yielded.each do |vid, klass|
         expect(video_ids).to include(vid)
-        expect(klass).to eq(Youtube::Transcript::Rb::FetchedTranscript)
+        expect(klass).to eq(YoutubeRb::Transcript::FetchedTranscript)
       end
     end
 
@@ -316,7 +316,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
       end
 
       it "raises error by default" do
-        expect { api.fetch_all(failing_video_ids) }.to raise_error(Youtube::Transcript::Rb::VideoUnavailable)
+        expect { api.fetch_all(failing_video_ids) }.to raise_error(YoutubeRb::Transcript::VideoUnavailable)
       end
 
       it "continues on error when configured" do
@@ -332,7 +332,7 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
         end
         expect(errors.length).to eq(1)
         expect(errors.first[0]).to eq("fail_video")
-        expect(errors.first[1]).to be_a(Youtube::Transcript::Rb::VideoUnavailable)
+        expect(errors.first[1]).to be_a(YoutubeRb::Transcript::VideoUnavailable)
       end
     end
 
@@ -356,27 +356,27 @@ RSpec.describe Youtube::Transcript::Rb::YouTubeTranscriptApi do
         .to_return(status: 200, body: sample_transcript_xml)
     end
 
-    describe "Youtube::Transcript::Rb.fetch" do
+    describe "YoutubeRb::Transcript.fetch" do
       it "fetches a transcript" do
-        result = Youtube::Transcript::Rb.fetch(video_id)
-        expect(result).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+        result = YoutubeRb::Transcript.fetch(video_id)
+        expect(result).to be_a(YoutubeRb::Transcript::FetchedTranscript)
       end
 
       it "accepts language option" do
-        result = Youtube::Transcript::Rb.fetch(video_id, languages: ["en"])
+        result = YoutubeRb::Transcript.fetch(video_id, languages: ["en"])
         expect(result.language_code).to eq("en")
       end
 
       it "accepts preserve_formatting option" do
-        result = Youtube::Transcript::Rb.fetch(video_id, preserve_formatting: false)
-        expect(result).to be_a(Youtube::Transcript::Rb::FetchedTranscript)
+        result = YoutubeRb::Transcript.fetch(video_id, preserve_formatting: false)
+        expect(result).to be_a(YoutubeRb::Transcript::FetchedTranscript)
       end
     end
 
-    describe "Youtube::Transcript::Rb.list" do
+    describe "YoutubeRb::Transcript.list" do
       it "lists available transcripts" do
-        result = Youtube::Transcript::Rb.list(video_id)
-        expect(result).to be_a(Youtube::Transcript::Rb::TranscriptList)
+        result = YoutubeRb::Transcript.list(video_id)
+        expect(result).to be_a(YoutubeRb::Transcript::TranscriptList)
       end
     end
   end

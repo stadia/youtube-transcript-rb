@@ -1,8 +1,0 @@
-module Youtube
-  module Transcript
-    module Rb
-      VERSION: String
-      # See the writing guide of rbs: https://github.com/ruby/rbs#guides
-    end
-  end
-end
