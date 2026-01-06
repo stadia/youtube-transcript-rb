@@ -8,6 +8,7 @@ require_relative "rb/transcript"
 require_relative "rb/transcript_list"
 require_relative "rb/transcript_list_fetcher"
 require_relative "rb/api"
+require_relative "rb/formatters"
 
 module Youtube
   module Transcript
