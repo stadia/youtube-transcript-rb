@@ -251,7 +251,7 @@ RSpec.describe YoutubeRb::Formatters do
         lines = result.split("\n")
         # Skip WEBVTT header
         timestamp_lines = lines.select { |l| l.include?("-->") }
-        timestamp_lines.each_with_index do |line, i|
+        timestamp_lines.each_with_index do |line, _i|
           prev_line = lines[lines.index(line) - 1]
           # Previous line should be empty or WEBVTT, not a number
           expect(prev_line).not_to match(/^\d+$/)

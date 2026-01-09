@@ -187,7 +187,7 @@ module YoutubeRb
       end
 
       def format_transcript_header(lines)
-        lines.join("\n\n") + "\n"
+        "#{lines.join("\n\n")}\n"
       end
 
       def format_transcript_helper(index, time_text, snippet)
@@ -214,7 +214,7 @@ module YoutubeRb
       end
 
       def format_transcript_header(lines)
-        "WEBVTT\n\n" + lines.join("\n\n") + "\n"
+        "WEBVTT\n\n#{lines.join("\n\n")}\n"
       end
 
       def format_transcript_helper(index, time_text, snippet)
@@ -238,7 +238,7 @@ module YoutubeRb
         def initialize(formatter_type)
           super(
             "The format '#{formatter_type}' is not supported. " \
-            "Choose one of the following formats: #{TYPES.keys.join(", ")}"
+            "Choose one of the following formats: #{TYPES.keys.join(', ')}"
           )
         end
       end

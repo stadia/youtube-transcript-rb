@@ -40,7 +40,7 @@ RSpec.describe "Integration Tests", :integration do
 
         # Print available transcripts for debugging
         puts "\nAvailable transcripts for video #{ted_talk_video_id}:"
-        puts transcript_list.to_s
+        puts transcript_list
       end
 
       it "returns a TranscriptList that is enumerable" do

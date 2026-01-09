@@ -266,7 +266,7 @@ RSpec.describe YoutubeRb::Transcript::YouTubeTranscriptApi do
     it "returns a hash of transcripts" do
       results = api.fetch_all(video_ids)
       expect(results).to be_a(Hash)
-      expect(results.keys).to contain_exactly(*video_ids)
+      expect(results.keys).to match_array(video_ids)
     end
 
     it "fetches all video transcripts" do
@@ -279,7 +279,7 @@ RSpec.describe YoutubeRb::Transcript::YouTubeTranscriptApi do
 
     it "respects language preference" do
       results = api.fetch_all(video_ids, languages: ["en"])
-      results.each do |_, transcript|
+      results.each_value do |transcript|
         expect(transcript.language_code).to eq("en")
       end
     end

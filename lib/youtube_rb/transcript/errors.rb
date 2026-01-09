@@ -131,13 +131,13 @@ module YoutubeRb
                       "2. (NOT RECOMMENDED) If you authenticate your requests using cookies, you " \
                       "will be able to continue doing requests for a while. However, YouTube will " \
                       "eventually permanently ban the account that you have used to authenticate " \
-                      "with! So only do this if you don't mind your account being banned!"
+                      "with! So only do this if you don't mind your account being banned!".freeze
     end
 
     # Raised when YouTube blocks the IP specifically
     class IpBlocked < RequestBlocked
       CAUSE_MESSAGE = "#{RequestBlocked::BASE_CAUSE_MESSAGE}" \
-                      "Ways to work around this are using proxies or rotating residential IPs."
+                      "Ways to work around this are using proxies or rotating residential IPs.".freeze
     end
 
     # Raised when too many requests are made (HTTP 429)

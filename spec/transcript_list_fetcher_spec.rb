@@ -104,11 +104,11 @@ RSpec.describe YoutubeRb::Transcript::TranscriptListFetcher do
 
     it "includes proper body in innertube request" do
       fetcher.fetch(video_id)
-      expect(WebMock).to have_requested(:post, innertube_url)
-        .with { |req|
+      expect(WebMock).to(have_requested(:post, innertube_url)
+        .with do |req|
           body = JSON.parse(req.body)
           body["videoId"] == video_id && body["context"]["client"]["clientName"] == "ANDROID"
-        }
+        end)
     end
   end
 

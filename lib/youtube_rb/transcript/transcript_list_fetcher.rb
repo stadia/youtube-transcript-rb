@@ -56,10 +56,15 @@ module YoutubeRb
         innertube_data = fetch_innertube_data(video_id, api_key)
         extract_captions_json(innertube_data, video_id)
       rescue RequestBlocked => e
-        retries = @proxy_config.nil? ? 0 : (@proxy_config.respond_to?(:retries_when_blocked) ? @proxy_config.retries_when_blocked : 0)
+        retries = if @proxy_config.nil?
+                    0
+                  else
+                    (@proxy_config.respond_to?(:retries_when_blocked) ? @proxy_config.retries_when_blocked : 0)
+                  end
         if try_number + 1 < retries
           return fetch_captions_json(video_id, try_number: try_number + 1)
         end
+
         raise e
       end
 
@@ -77,6 +82,7 @@ module YoutubeRb
         end
 
         raise IpBlocked, video_id if html.include?('class="g-recaptcha"')
+
         raise YouTubeDataUnparsable, video_id
       end
 
@@ -122,6 +128,7 @@ module YoutubeRb
           if video_id.start_with?("http://") || video_id.start_with?("https://")
             raise InvalidVideoId, video_id
           end
+
           raise VideoUnavailable, video_id
         end
 

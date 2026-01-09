@@ -118,11 +118,9 @@ module YoutubeRb
             results[video_id] = transcript
             yield(video_id, transcript) if block_given?
           rescue CouldNotRetrieveTranscript => e
-            if continue_on_error
-              yield(video_id, e) if block_given?
-            else
-              raise
-            end
+            raise unless continue_on_error
+
+            yield(video_id, e) if block_given?
           end
         end
 
