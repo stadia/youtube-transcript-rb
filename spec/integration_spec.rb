@@ -180,7 +180,7 @@ RSpec.describe "Integration Tests", :integration do
     let(:api) { YoutubeRb::Transcript::YouTubeTranscriptApi.new }
     let(:transcript) { api.fetch(ted_talk_video_id) }
 
-    describe YoutubeRb::Transcript::Formatters::JSONFormatter do
+    describe YoutubeRb::Formatters::JSONFormatter do
       it "formats real transcript as JSON" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)
@@ -192,7 +192,7 @@ RSpec.describe "Integration Tests", :integration do
       end
     end
 
-    describe YoutubeRb::Transcript::Formatters::TextFormatter do
+    describe YoutubeRb::Formatters::TextFormatter do
       it "formats real transcript as plain text" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)
@@ -205,7 +205,7 @@ RSpec.describe "Integration Tests", :integration do
       end
     end
 
-    describe YoutubeRb::Transcript::Formatters::SRTFormatter do
+    describe YoutubeRb::Formatters::SRTFormatter do
       it "formats real transcript as SRT" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)
@@ -218,7 +218,7 @@ RSpec.describe "Integration Tests", :integration do
       end
     end
 
-    describe YoutubeRb::Transcript::Formatters::WebVTTFormatter do
+    describe YoutubeRb::Formatters::WebVTTFormatter do
       it "formats real transcript as WebVTT" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)
@@ -231,7 +231,7 @@ RSpec.describe "Integration Tests", :integration do
       end
     end
 
-    describe YoutubeRb::Transcript::Formatters::PrettyPrintFormatter do
+    describe YoutubeRb::Formatters::PrettyPrintFormatter do
       it "formats real transcript as pretty-printed output" do
         formatter = described_class.new
         output = formatter.format_transcript(transcript)

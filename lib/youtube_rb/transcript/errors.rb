@@ -40,7 +40,7 @@ module YoutubeRb
       def github_referral
         "\n\nIf you are sure that the described cause is not responsible for this error " \
           "and that a transcript should be retrievable, please create an issue at " \
-          "https://github.com/jdepoix/youtube-transcript-api/issues. " \
+          "https://github.com/stadia/youtube-transcript-rb/issues. " \
           "Please add which version of youtube_transcript_api you are using " \
           "and provide the information needed to replicate the error. " \
           "Also make sure that there are no open issues which already describe your problem!"

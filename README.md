@@ -300,11 +300,11 @@ Here is how to import from the `Formatters` module:
 require 'youtube_rb/transcript'
 
 # Some provided formatter classes, each outputs a different string format.
-YoutubeRb::Transcript::Formatters::JSONFormatter
-YoutubeRb::Transcript::Formatters::TextFormatter
-YoutubeRb::Transcript::Formatters::PrettyPrintFormatter
-YoutubeRb::Transcript::Formatters::WebVTTFormatter
-YoutubeRb::Transcript::Formatters::SRTFormatter
+YoutubeRb::Formatters::JSONFormatter
+YoutubeRb::Formatters::TextFormatter
+YoutubeRb::Formatters::PrettyPrintFormatter
+YoutubeRb::Formatters::WebVTTFormatter
+YoutubeRb::Formatters::SRTFormatter
 ```
 
 ### Formatter Example
@@ -317,7 +317,7 @@ require 'youtube_rb/transcript'
 api = YoutubeRb::Transcript::YouTubeTranscriptApi.new
 transcript = api.fetch(video_id)
 
-formatter = YoutubeRb::Transcript::Formatters::JSONFormatter.new
+formatter = YoutubeRb::Formatters::JSONFormatter.new
 
 # .format_transcript(transcript) turns the transcript into a JSON string.
 json_formatted = formatter.format_transcript(transcript)
@@ -334,7 +334,7 @@ Since `JSONFormatter` leverages `JSON.generate` you can also forward keyword arg
 `.format_transcript(transcript)` such as making your file output prettier:
 
 ```ruby
-json_formatted = YoutubeRb::Transcript::Formatters::JSONFormatter.new.format_transcript(
+json_formatted = YoutubeRb::Formatters::JSONFormatter.new.format_transcript(
   transcript, 
   indent: '  ',
   space: ' '
@@ -348,7 +348,7 @@ You can also use the `FormatterLoader` to dynamically load formatters by name:
 ```ruby
 require 'youtube_rb/transcript'
 
-loader = YoutubeRb::Transcript::Formatters::FormatterLoader.new
+loader = YoutubeRb::Formatters::FormatterLoader.new
 
 # Load by type name: "json", "pretty", "text", "webvtt", "srt"
 formatter = loader.load("json")
@@ -364,7 +364,7 @@ You can implement your own formatter class. Just inherit from the `Formatter` ba
 `format_transcript` and `format_transcripts` methods which should ultimately return a string:
 
 ```ruby
-class MyCustomFormatter < YoutubeRb::Transcript::Formatters::Formatter
+class MyCustomFormatter < YoutubeRb::Formatters::Formatter
   def format_transcript(transcript, **options)
     # Do your custom work in here, but return a string.
     'your processed output data as a string.'

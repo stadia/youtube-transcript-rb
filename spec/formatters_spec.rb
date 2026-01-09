@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe YoutubeRb::Transcript::Formatters do
+RSpec.describe YoutubeRb::Formatters do
   # Helper to create a FetchedTranscript with snippets
   def create_transcript(video_id: "test123", language: "English", language_code: "en", is_generated: false, snippets: nil)
     snippets ||= [
@@ -24,7 +24,7 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
   let(:transcript2) { create_transcript(video_id: "video2", language_code: "es", language: "Spanish") }
   let(:transcripts) { [transcript, transcript2] }
 
-  describe YoutubeRb::Transcript::Formatters::Formatter do
+  describe YoutubeRb::Formatters::Formatter do
     let(:formatter) { described_class.new }
 
     describe "#format_transcript" do
@@ -40,7 +40,7 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
     end
   end
 
-  describe YoutubeRb::Transcript::Formatters::JSONFormatter do
+  describe YoutubeRb::Formatters::JSONFormatter do
     let(:formatter) { described_class.new }
 
     describe "#format_transcript" do
@@ -88,7 +88,7 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
     end
   end
 
-  describe YoutubeRb::Transcript::Formatters::TextFormatter do
+  describe YoutubeRb::Formatters::TextFormatter do
     let(:formatter) { described_class.new }
 
     describe "#format_transcript" do
@@ -118,7 +118,7 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
     end
   end
 
-  describe YoutubeRb::Transcript::Formatters::PrettyPrintFormatter do
+  describe YoutubeRb::Formatters::PrettyPrintFormatter do
     let(:formatter) { described_class.new }
 
     describe "#format_transcript" do
@@ -156,7 +156,7 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
     end
   end
 
-  describe YoutubeRb::Transcript::Formatters::SRTFormatter do
+  describe YoutubeRb::Formatters::SRTFormatter do
     let(:formatter) { described_class.new }
 
     describe "#format_transcript" do
@@ -227,7 +227,7 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
     end
   end
 
-  describe YoutubeRb::Transcript::Formatters::WebVTTFormatter do
+  describe YoutubeRb::Formatters::WebVTTFormatter do
     let(:formatter) { described_class.new }
 
     describe "#format_transcript" do
@@ -282,55 +282,55 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
     end
   end
 
-  describe YoutubeRb::Transcript::Formatters::FormatterLoader do
+  describe YoutubeRb::Formatters::FormatterLoader do
     let(:loader) { described_class.new }
 
     describe "#load" do
       it "loads JSONFormatter for 'json'" do
         formatter = loader.load("json")
-        expect(formatter).to be_a(YoutubeRb::Transcript::Formatters::JSONFormatter)
+        expect(formatter).to be_a(YoutubeRb::Formatters::JSONFormatter)
       end
 
       it "loads TextFormatter for 'text'" do
         formatter = loader.load("text")
-        expect(formatter).to be_a(YoutubeRb::Transcript::Formatters::TextFormatter)
+        expect(formatter).to be_a(YoutubeRb::Formatters::TextFormatter)
       end
 
       it "loads PrettyPrintFormatter for 'pretty'" do
         formatter = loader.load("pretty")
-        expect(formatter).to be_a(YoutubeRb::Transcript::Formatters::PrettyPrintFormatter)
+        expect(formatter).to be_a(YoutubeRb::Formatters::PrettyPrintFormatter)
       end
 
       it "loads SRTFormatter for 'srt'" do
         formatter = loader.load("srt")
-        expect(formatter).to be_a(YoutubeRb::Transcript::Formatters::SRTFormatter)
+        expect(formatter).to be_a(YoutubeRb::Formatters::SRTFormatter)
       end
 
       it "loads WebVTTFormatter for 'webvtt'" do
         formatter = loader.load("webvtt")
-        expect(formatter).to be_a(YoutubeRb::Transcript::Formatters::WebVTTFormatter)
+        expect(formatter).to be_a(YoutubeRb::Formatters::WebVTTFormatter)
       end
 
       it "defaults to PrettyPrintFormatter" do
         formatter = loader.load
-        expect(formatter).to be_a(YoutubeRb::Transcript::Formatters::PrettyPrintFormatter)
+        expect(formatter).to be_a(YoutubeRb::Formatters::PrettyPrintFormatter)
       end
 
       it "accepts symbol as formatter type" do
         formatter = loader.load(:json)
-        expect(formatter).to be_a(YoutubeRb::Transcript::Formatters::JSONFormatter)
+        expect(formatter).to be_a(YoutubeRb::Formatters::JSONFormatter)
       end
 
       it "raises UnknownFormatterType for invalid type" do
         expect { loader.load("invalid") }.to raise_error(
-          YoutubeRb::Transcript::Formatters::FormatterLoader::UnknownFormatterType
+          YoutubeRb::Formatters::FormatterLoader::UnknownFormatterType
         )
       end
 
       it "includes available formats in error message" do
         begin
           loader.load("invalid")
-        rescue YoutubeRb::Transcript::Formatters::FormatterLoader::UnknownFormatterType => e
+        rescue YoutubeRb::Formatters::FormatterLoader::UnknownFormatterType => e
           expect(e.message).to include("json")
           expect(e.message).to include("text")
           expect(e.message).to include("srt")
@@ -352,7 +352,7 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
   end
 
   describe "integration tests" do
-    let(:loader) { YoutubeRb::Transcript::Formatters::FormatterLoader.new }
+    let(:loader) { YoutubeRb::Formatters::FormatterLoader.new }
 
     it "can format transcript with each formatter type" do
       %w[json text pretty srt webvtt].each do |type|
@@ -378,25 +378,25 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
     let(:empty_transcript) { create_transcript(snippets: empty_snippets) }
 
     it "JSONFormatter handles empty transcript" do
-      formatter = YoutubeRb::Transcript::Formatters::JSONFormatter.new
+      formatter = YoutubeRb::Formatters::JSONFormatter.new
       result = formatter.format_transcript(empty_transcript)
       expect(JSON.parse(result)).to eq([])
     end
 
     it "TextFormatter handles empty transcript" do
-      formatter = YoutubeRb::Transcript::Formatters::TextFormatter.new
+      formatter = YoutubeRb::Formatters::TextFormatter.new
       result = formatter.format_transcript(empty_transcript)
       expect(result).to eq("")
     end
 
     it "SRTFormatter handles empty transcript" do
-      formatter = YoutubeRb::Transcript::Formatters::SRTFormatter.new
+      formatter = YoutubeRb::Formatters::SRTFormatter.new
       result = formatter.format_transcript(empty_transcript)
       expect(result).to eq("\n")
     end
 
     it "WebVTTFormatter handles empty transcript" do
-      formatter = YoutubeRb::Transcript::Formatters::WebVTTFormatter.new
+      formatter = YoutubeRb::Formatters::WebVTTFormatter.new
       result = formatter.format_transcript(empty_transcript)
       expect(result).to eq("WEBVTT\n\n\n")
     end
@@ -413,7 +413,7 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
     let(:special_transcript) { create_transcript(snippets: special_snippets) }
 
     it "JSONFormatter escapes special characters" do
-      formatter = YoutubeRb::Transcript::Formatters::JSONFormatter.new
+      formatter = YoutubeRb::Formatters::JSONFormatter.new
       result = formatter.format_transcript(special_transcript)
       parsed = JSON.parse(result)
       expect(parsed[0]["text"]).to eq("Hello <b>world</b>")
@@ -421,14 +421,14 @@ RSpec.describe YoutubeRb::Transcript::Formatters do
     end
 
     it "TextFormatter preserves special characters" do
-      formatter = YoutubeRb::Transcript::Formatters::TextFormatter.new
+      formatter = YoutubeRb::Formatters::TextFormatter.new
       result = formatter.format_transcript(special_transcript)
       expect(result).to include("<b>world</b>")
       expect(result).to include('"test"')
     end
 
     it "SRTFormatter preserves HTML tags in text" do
-      formatter = YoutubeRb::Transcript::Formatters::SRTFormatter.new
+      formatter = YoutubeRb::Formatters::SRTFormatter.new
       result = formatter.format_transcript(special_transcript)
       expect(result).to include("<b>world</b>")
     end
