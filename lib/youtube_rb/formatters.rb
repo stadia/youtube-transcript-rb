@@ -109,9 +109,7 @@ module YoutubeRb
           end_time = snippet.start + snippet.duration
 
           # Use next snippet's start time if it starts before current end time
-          if i < snippets.length - 1 && snippets[i + 1].start < end_time
-            end_time = snippets[i + 1].start
-          end
+          end_time = snippets[i + 1].start if i < snippets.length - 1 && snippets[i + 1].start < end_time
 
           time_text = "#{seconds_to_timestamp(snippet.start)} --> #{seconds_to_timestamp(end_time)}"
           lines << format_transcript_helper(i, time_text, snippet)

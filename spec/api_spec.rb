@@ -126,19 +126,19 @@ RSpec.describe YoutubeRb::Transcript::YouTubeTranscriptApi do
       stub_request(:get, "https://www.youtube.com/api/timedtext?v=#{video_id}&lang=es")
         .to_return(status: 200, body: sample_transcript_xml)
 
-      result = api.fetch(video_id, languages: ["es", "en"])
+      result = api.fetch(video_id, languages: %w[es en])
       expect(result.language_code).to eq("es")
     end
 
     it "falls back to next language if first not available" do
-      result = api.fetch(video_id, languages: ["ja", "en"])
+      result = api.fetch(video_id, languages: %w[ja en])
       expect(result.language_code).to eq("en")
     end
 
     it "raises NoTranscriptFound when no language matches" do
-      expect {
-        api.fetch(video_id, languages: ["ja", "ko", "zh"])
-      }.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
+      expect do
+        api.fetch(video_id, languages: %w[ja ko zh])
+      end.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
     end
 
     context "with preserve_formatting option" do
@@ -233,7 +233,7 @@ RSpec.describe YoutubeRb::Transcript::YouTubeTranscriptApi do
   end
 
   describe "#fetch_all" do
-    let(:video_ids) { ["video1", "video2", "video3"] }
+    let(:video_ids) { %w[video1 video2 video3] }
 
     before do
       video_ids.each do |vid|

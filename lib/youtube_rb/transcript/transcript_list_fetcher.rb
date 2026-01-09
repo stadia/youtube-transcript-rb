@@ -61,9 +61,7 @@ module YoutubeRb
                   else
                     (@proxy_config.respond_to?(:retries_when_blocked) ? @proxy_config.retries_when_blocked : 0)
                   end
-        if try_number + 1 < retries
-          return fetch_captions_json(video_id, try_number: try_number + 1)
-        end
+        return fetch_captions_json(video_id, try_number: try_number + 1) if try_number + 1 < retries
 
         raise e
       end
@@ -77,9 +75,7 @@ module YoutubeRb
       # @raise [YouTubeDataUnparsable] if the key cannot be found
       def extract_innertube_api_key(html, video_id)
         match = html.match(/"INNERTUBE_API_KEY":\s*"([a-zA-Z0-9_-]+)"/)
-        if match && match[1]
-          return match[1]
-        end
+        return match[1] if match && match[1]
 
         raise IpBlocked, video_id if html.include?('class="g-recaptcha"')
 
@@ -96,9 +92,7 @@ module YoutubeRb
         assert_playability(innertube_data["playabilityStatus"], video_id)
 
         captions_json = innertube_data.dig("captions", "playerCaptionsTracklistRenderer")
-        if captions_json.nil? || !captions_json.key?("captionTracks")
-          raise TranscriptsDisabled, video_id
-        end
+        raise TranscriptsDisabled, video_id if captions_json.nil? || !captions_json.key?("captionTracks")
 
         captions_json
       end
@@ -125,9 +119,7 @@ module YoutubeRb
         end
 
         if status == PlayabilityStatus::ERROR && reason == PlayabilityFailedReason::VIDEO_UNAVAILABLE
-          if video_id.start_with?("http://") || video_id.start_with?("https://")
-            raise InvalidVideoId, video_id
-          end
+          raise InvalidVideoId, video_id if video_id.start_with?("http://") || video_id.start_with?("https://")
 
           raise VideoUnavailable, video_id
         end
@@ -164,9 +156,7 @@ module YoutubeRb
         if html.include?('action="https://consent.youtube.com/s"')
           create_consent_cookie(html, video_id)
           html = fetch_html(video_id)
-          if html.include?('action="https://consent.youtube.com/s"')
-            raise FailedToCreateConsentCookie, video_id
-          end
+          raise FailedToCreateConsentCookie, video_id if html.include?('action="https://consent.youtube.com/s"')
         end
 
         html
@@ -202,9 +192,9 @@ module YoutubeRb
         response = @http_client.post(url) do |req|
           req.headers["Content-Type"] = "application/json"
           req.body = JSON.generate({
-            "context" => INNERTUBE_CONTEXT,
-            "videoId" => video_id
-          })
+                                     "context" => INNERTUBE_CONTEXT,
+                                     "videoId" => video_id
+                                   })
         end
 
         raise_http_errors(response, video_id)

@@ -85,7 +85,7 @@ RSpec.describe YoutubeRb::Transcript do
       end
 
       it "sets is_generated" do
-        expect(transcript.is_generated).to eq(false)
+        expect(transcript.is_generated).to be(false)
       end
 
       it "initializes with empty snippets by default" do
@@ -131,13 +131,12 @@ RSpec.describe YoutubeRb::Transcript do
 
       it "iterates over snippets" do
         texts = transcript.map(&:text)
-        expect(texts).to eq(["Hello", "World"])
+        expect(texts).to eq(%w[Hello World])
       end
 
       describe "#each" do
         it "yields each snippet" do
-          yielded = []
-          transcript.each { |s| yielded << s }
+          yielded = transcript.map { |s| s }
           expect(yielded).to eq([snippet1, snippet2])
         end
       end
@@ -261,7 +260,7 @@ RSpec.describe YoutubeRb::Transcript do
       end
 
       it "sets is_generated" do
-        expect(transcript.is_generated).to eq(false)
+        expect(transcript.is_generated).to be(false)
       end
 
       it "sets translation_languages" do
@@ -293,15 +292,15 @@ RSpec.describe YoutubeRb::Transcript do
 
     describe "#translate" do
       it "raises NotTranslatable when not translatable" do
-        expect {
+        expect do
           transcript_without_translations.translate("es")
-        }.to raise_error(YoutubeRb::Transcript::NotTranslatable)
+        end.to raise_error(YoutubeRb::Transcript::NotTranslatable)
       end
 
       it "raises TranslationLanguageNotAvailable for unavailable language" do
-        expect {
+        expect do
           transcript.translate("de")
-        }.to raise_error(YoutubeRb::Transcript::TranslationLanguageNotAvailable)
+        end.to raise_error(YoutubeRb::Transcript::TranslationLanguageNotAvailable)
       end
 
       it "returns a new Transcript for available language" do
@@ -362,7 +361,7 @@ RSpec.describe YoutubeRb::Transcript do
         expect(result.video_id).to eq("test_video")
         expect(result.language).to eq("English")
         expect(result.language_code).to eq("en")
-        expect(result.is_generated).to eq(false)
+        expect(result.is_generated).to be(false)
       end
 
       it "raises PoTokenRequired when URL contains &exp=xpe" do

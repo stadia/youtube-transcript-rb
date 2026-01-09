@@ -461,8 +461,12 @@ RSpec.describe YoutubeRb::Transcript::TranscriptListFetcher do
 
         stub_request(:post, innertube_url)
           .to_return(
-            { status: 200, body: { "playabilityStatus" => { "status" => "LOGIN_REQUIRED", "reason" => "Sign in to confirm you're not a bot" } }.to_json },
-            { status: 200, body: { "playabilityStatus" => { "status" => "LOGIN_REQUIRED", "reason" => "Sign in to confirm you're not a bot" } }.to_json },
+            { status: 200,
+              body: { "playabilityStatus" => { "status" => "LOGIN_REQUIRED",
+                                               "reason" => "Sign in to confirm you're not a bot" } }.to_json },
+            { status: 200,
+              body: { "playabilityStatus" => { "status" => "LOGIN_REQUIRED",
+                                               "reason" => "Sign in to confirm you're not a bot" } }.to_json },
             { status: 200, body: sample_innertube_response.to_json }
           )
       end
@@ -480,7 +484,8 @@ RSpec.describe YoutubeRb::Transcript::TranscriptListFetcher do
           .to_return(status: 200, body: sample_html)
 
         stub_request(:post, innertube_url)
-          .to_return(status: 200, body: { "playabilityStatus" => { "status" => "LOGIN_REQUIRED", "reason" => "Sign in to confirm you're not a bot" } }.to_json)
+          .to_return(status: 200, body: { "playabilityStatus" => { "status" => "LOGIN_REQUIRED",
+                                                                   "reason" => "Sign in to confirm you're not a bot" } }.to_json)
       end
 
       it "raises RequestBlocked after exhausting retries" do

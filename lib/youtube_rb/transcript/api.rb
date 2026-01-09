@@ -113,15 +113,13 @@ module YoutubeRb
         results = {}
 
         video_ids.each do |video_id|
-          begin
-            transcript = fetch(video_id, languages: languages, preserve_formatting: preserve_formatting)
-            results[video_id] = transcript
-            yield(video_id, transcript) if block_given?
-          rescue CouldNotRetrieveTranscript => e
-            raise unless continue_on_error
+          transcript = fetch(video_id, languages: languages, preserve_formatting: preserve_formatting)
+          results[video_id] = transcript
+          yield(video_id, transcript) if block_given?
+        rescue CouldNotRetrieveTranscript => e
+          raise unless continue_on_error
 
-            yield(video_id, e) if block_given?
-          end
+          yield(video_id, e) if block_given?
         end
 
         results

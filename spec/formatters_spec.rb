@@ -4,7 +4,8 @@ require "spec_helper"
 
 RSpec.describe YoutubeRb::Formatters do
   # Helper to create a FetchedTranscript with snippets
-  def create_transcript(video_id: "test123", language: "English", language_code: "en", is_generated: false, snippets: nil)
+  def create_transcript(video_id: "test123", language: "English", language_code: "en", is_generated: false,
+                        snippets: nil)
     snippets ||= [
       YoutubeRb::Transcript::TranscriptSnippet.new(text: "Hello world", start: 0.0, duration: 2.5),
       YoutubeRb::Transcript::TranscriptSnippet.new(text: "This is a test", start: 2.5, duration: 3.0),
@@ -328,15 +329,13 @@ RSpec.describe YoutubeRb::Formatters do
       end
 
       it "includes available formats in error message" do
-        begin
-          loader.load("invalid")
-        rescue YoutubeRb::Formatters::FormatterLoader::UnknownFormatterType => e
-          expect(e.message).to include("json")
-          expect(e.message).to include("text")
-          expect(e.message).to include("srt")
-          expect(e.message).to include("webvtt")
-          expect(e.message).to include("pretty")
-        end
+        loader.load("invalid")
+      rescue YoutubeRb::Formatters::FormatterLoader::UnknownFormatterType => e
+        expect(e.message).to include("json")
+        expect(e.message).to include("text")
+        expect(e.message).to include("srt")
+        expect(e.message).to include("webvtt")
+        expect(e.message).to include("pretty")
       end
     end
 

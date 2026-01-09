@@ -69,11 +69,11 @@ module YoutubeRb
       #
       # @yield [TranscriptMetadata] each available transcript
       # @return [Enumerator] if no block given
-      def each(&block)
+      def each(&)
         return to_enum(:each) unless block_given?
 
-        @manually_created_transcripts.each_value(&block)
-        @generated_transcripts.each_value(&block)
+        @manually_created_transcripts.each_value(&)
+        @generated_transcripts.each_value(&)
       end
 
       # Find a transcript for the given language codes.

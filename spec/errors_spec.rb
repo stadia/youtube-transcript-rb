@@ -159,12 +159,12 @@ RSpec.describe YoutubeRb::Transcript do
 
   describe YoutubeRb::Transcript::NoTranscriptFound do
     let(:video_id) { "no_transcript" }
-    let(:requested_languages) { ["ko", "ja"] }
+    let(:requested_languages) { %w[ko ja] }
     let(:transcript_data) { double("TranscriptList", to_s: "Available: en, es") }
     let(:error) { described_class.new(video_id, requested_languages, transcript_data) }
 
     it "stores requested_language_codes" do
-      expect(error.requested_language_codes).to eq(["ko", "ja"])
+      expect(error.requested_language_codes).to eq(%w[ko ja])
     end
 
     it "stores transcript_data" do

@@ -92,8 +92,8 @@ module YoutubeRb
 
       # Iterate over each snippet
       # @yield [TranscriptSnippet] each snippet in the transcript
-      def each(&block)
-        @snippets.each(&block)
+      def each(&)
+        @snippets.each(&)
       end
 
       # Get a snippet by index

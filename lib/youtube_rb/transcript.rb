@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "transcript/version"
 require_relative "transcript/settings"
 require_relative "transcript/errors"
 require_relative "transcript/transcript_parser"
@@ -8,7 +7,6 @@ require_relative "transcript/transcript"
 require_relative "transcript/transcript_list"
 require_relative "transcript/transcript_list_fetcher"
 require_relative "transcript/api"
-require_relative "formatters/formatters"
 
 module YoutubeRb
   module Transcript

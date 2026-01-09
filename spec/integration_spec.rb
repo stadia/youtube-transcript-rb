@@ -39,8 +39,6 @@ RSpec.describe "Integration Tests", :integration do
         expect(transcript_list.count).to be > 0
 
         # Print available transcripts for debugging
-        puts "\nAvailable transcripts for video #{ted_talk_video_id}:"
-        puts transcript_list
       end
 
       it "returns a TranscriptList that is enumerable" do
@@ -67,9 +65,6 @@ RSpec.describe "Integration Tests", :integration do
         expect(first_snippet.text).to be_a(String)
         expect(first_snippet.start).to be_a(Float)
         expect(first_snippet.duration).to be_a(Float)
-
-        puts "\nFetched #{transcript.length} snippets"
-        puts "First snippet: #{first_snippet.text[0..50]}..."
       end
 
       it "fetches transcript with specific language" do
@@ -82,9 +77,9 @@ RSpec.describe "Integration Tests", :integration do
 
       it "falls back to alternative language if primary not available" do
         # Request Japanese first, then English as fallback
-        transcript = api.fetch(ted_talk_video_id, languages: ["ja", "en"])
+        transcript = api.fetch(ted_talk_video_id, languages: %w[ja en])
 
-        expect(["ja", "en"]).to include(transcript.language_code)
+        expect(%w[ja en]).to include(transcript.language_code)
         expect(transcript.snippets).not_to be_empty
       end
 
@@ -92,7 +87,7 @@ RSpec.describe "Integration Tests", :integration do
         transcript = api.fetch(ted_talk_video_id, preserve_formatting: true)
 
         expect(transcript).to be_a(YoutubeRb::Transcript::FetchedTranscript)
-        # Note: Not all videos have HTML formatting, so we just verify it doesn't break
+        # NOTE: Not all videos have HTML formatting, so we just verify it doesn't break
       end
     end
 
@@ -111,9 +106,7 @@ RSpec.describe "Integration Tests", :integration do
         errors = []
 
         results = api.fetch_all(video_ids, continue_on_error: true) do |video_id, result|
-          if result.is_a?(StandardError)
-            errors << { video_id: video_id, error: result }
-          end
+          errors << { video_id: video_id, error: result } if result.is_a?(StandardError)
         end
 
         expect(results).to have_key(ted_talk_video_id)
@@ -163,8 +156,6 @@ RSpec.describe "Integration Tests", :integration do
           expect(fetched).to be_a(YoutubeRb::Transcript::FetchedTranscript)
           expect(fetched.language_code).to eq("es")
           expect(fetched.snippets).not_to be_empty
-
-          puts "\nTranslated to Spanish: #{fetched.first.text[0..50]}..."
         rescue YoutubeRb::Transcript::TranslationLanguageNotAvailable
           skip "Spanish translation not available for this video"
         rescue YoutubeRb::Transcript::IpBlocked
@@ -248,15 +239,15 @@ RSpec.describe "Integration Tests", :integration do
     let(:api) { YoutubeRb::Transcript::YouTubeTranscriptApi.new }
 
     it "raises NoTranscriptFound for unavailable language" do
-      expect {
+      expect do
         api.fetch(ted_talk_video_id, languages: ["xx"]) # Invalid language code
-      }.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
+      end.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
     end
 
     it "raises appropriate error for invalid video ID" do
-      expect {
+      expect do
         api.fetch("this_is_not_a_valid_video_id_12345")
-      }.to raise_error(YoutubeRb::Transcript::CouldNotRetrieveTranscript)
+      end.to raise_error(YoutubeRb::Transcript::CouldNotRetrieveTranscript)
     end
 
     it "raises TranscriptsDisabled for video without transcripts" do
@@ -275,7 +266,7 @@ RSpec.describe "Integration Tests", :integration do
       expect(transcript).to respond_to(:map)
       expect(transcript).to respond_to(:select)
       expect(transcript).to respond_to(:first)
-      # Note: Enumerable doesn't provide #last by default, but we can use to_a.last
+      # NOTE: Enumerable doesn't provide #last by default, but we can use to_a.last
       expect(transcript.to_a.last).to be_a(YoutubeRb::Transcript::TranscriptMetadataSnippet)
     end
 

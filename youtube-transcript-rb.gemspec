@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/youtube_rb/transcript/version"
+require_relative "lib/youtube_rb/version"
 
 Gem::Specification.new do |spec|
   spec.name = "youtube-transcript-rb"
-  spec.version = YoutubeRb::Transcript::VERSION
+  spec.version = YoutubeRb::VERSION
   spec.authors = ["jeff.dean"]
   spec.email = ["stadia@gmail.com"]
 
@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata["bug_tracker_uri"] = "https://github.com/stadia/youtube-transcript-rb/issues"
   spec.metadata["documentation_uri"] = "https://github.com/stadia/youtube-transcript-rb#readme"
+  spec.metadata['rubygems_mfa_required'] = 'true'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.

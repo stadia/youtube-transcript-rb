@@ -141,8 +141,7 @@ RSpec.describe YoutubeRb::Transcript::TranscriptList do
 
     describe "#each" do
       it "yields each transcript" do
-        transcripts = []
-        list.each { |t| transcripts << t }
+        transcripts = list.map { |t| t }
         expect(transcripts.length).to eq(3)
       end
 
@@ -196,22 +195,20 @@ RSpec.describe YoutubeRb::Transcript::TranscriptList do
     end
 
     it "tries language codes in order of priority" do
-      transcript = list.find_transcript(["ja", "es", "en"])
+      transcript = list.find_transcript(%w[ja es en])
       expect(transcript.language_code).to eq("es")
     end
 
     it "raises NoTranscriptFound when no match" do
-      expect {
-        list.find_transcript(["ja", "ko", "zh"])
-      }.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
+      expect do
+        list.find_transcript(%w[ja ko zh])
+      end.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
     end
 
     it "includes requested languages in error" do
-      begin
-        list.find_transcript(["ja", "ko"])
-      rescue YoutubeRb::Transcript::NoTranscriptFound => e
-        expect(e.requested_language_codes).to eq(["ja", "ko"])
-      end
+      list.find_transcript(%w[ja ko])
+    rescue YoutubeRb::Transcript::NoTranscriptFound => e
+      expect(e.requested_language_codes).to eq(%w[ja ko])
     end
   end
 
@@ -231,15 +228,15 @@ RSpec.describe YoutubeRb::Transcript::TranscriptList do
     end
 
     it "does not return manually created transcripts" do
-      expect {
+      expect do
         list.find_generated_transcript(["en"])
-      }.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
+      end.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
     end
 
     it "raises NoTranscriptFound when no match" do
-      expect {
+      expect do
         list.find_generated_transcript(["ja"])
-      }.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
+      end.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
     end
   end
 
@@ -259,13 +256,13 @@ RSpec.describe YoutubeRb::Transcript::TranscriptList do
     end
 
     it "does not return generated transcripts" do
-      expect {
+      expect do
         list.find_manually_created_transcript(["en-auto"])
-      }.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
+      end.to raise_error(YoutubeRb::Transcript::NoTranscriptFound)
     end
 
     it "tries language codes in order" do
-      transcript = list.find_manually_created_transcript(["ja", "es"])
+      transcript = list.find_manually_created_transcript(%w[ja es])
       expect(transcript.language_code).to eq("es")
     end
   end
